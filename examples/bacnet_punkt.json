@@ -1,0 +1,19 @@
+{
+  "raw_label": "AXX-PX-APPXXX:XXXXXXXX-Location/BACnet IP1.XXXXXX.Utganger.XXX_DXXX-SBXXX.#XX",
+  "source_type": "bacnet",
+  "carrier": null,
+  "function": "utgang/styring",
+  "measurement_type": "status",
+  "unit": null,
+  "object_type": "BV",
+  "primary_system": null,
+  "subsystem": null,
+  "component": null,
+  "location": { "building": null, "zone": null },
+  "is_derived": false,
+  "confidence": 0.25,
+  "reasoning": "Klartekst 'Utganger' antyder utgangs-/styringspunkt; verdi 0 og kontekst antyder binaert (BV). Mesteparten sensurert -> lav konfidens, system/komponent ukjent.",
+  "data_checks": { "temp_correlation": null, "distinct_values": 2, "monotonic": null, "conflict": false },
+  "relationships": [],
+  "validated": false
+}

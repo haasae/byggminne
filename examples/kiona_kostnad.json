@@ -1,0 +1,19 @@
+{
+  "raw_label": "El Kostnad + Spotpris + Manedskostnad + Peak high-kostnad",
+  "source_type": "kiona",
+  "carrier": "el",
+  "function": "kostnad",
+  "measurement_type": "kostnad",
+  "unit": "NOK",
+  "object_type": null,
+  "primary_system": null,
+  "subsystem": null,
+  "component": null,
+  "location": { "building": "BYGG_01", "zone": null },
+  "is_derived": true,
+  "confidence": 0.9,
+  "reasoning": "Sammensatt navn lister opp priskomponenter -> beregnet/virtuell serie, ikke fysisk maaler. is_derived=true.",
+  "data_checks": { "temp_correlation": null, "distinct_values": null, "monotonic": null, "conflict": null },
+  "relationships": [],
+  "validated": false
+}

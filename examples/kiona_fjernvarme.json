@@ -1,0 +1,19 @@
+{
+  "raw_label": "Fjernvarme Energi",
+  "source_type": "kiona",
+  "carrier": "fjernvarme",
+  "function": "energimaaling",
+  "measurement_type": "energi",
+  "unit": "kWh",
+  "object_type": null,
+  "primary_system": { "code": "3200", "description": "Varme" },
+  "subsystem": null,
+  "component": null,
+  "location": { "building": "BYGG_01", "zone": null },
+  "is_derived": false,
+  "confidence": 0.95,
+  "reasoning": "Klartekst 'Fjernvarme Energi' gir carrier=fjernvarme og energimaaling paa byggniva. Enhet antatt kWh, boer verifiseres mot data.",
+  "data_checks": { "temp_correlation": null, "distinct_values": null, "monotonic": null, "conflict": null },
+  "relationships": [],
+  "validated": false
+}
