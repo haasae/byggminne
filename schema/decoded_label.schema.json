@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://label-decoder/schema/decoded_label.schema.json",
+  "title": "DecodedLabel",
+  "description": "Structured form of one decoded building-measurement label. Partial decoding is valid: unknown semantic fields are null, but raw_label, source_type, confidence, and validated are always required.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "raw_label": {
+      "type": "string",
+      "description": "The original label string, verbatim. Mandatory for traceability."
+    },
+    "source_type": {
+      "type": "string",
+      "enum": ["kiona", "bacnet", "other"],
+      "description": "Which data universe the label came from."
+    },
+    "carrier": {
+      "type": ["string", "null"],
+      "enum": ["el", "fjernvarme", "kjoling", "gass", "vann", "annet", null],
+      "description": "Energy/medium carrier, inferred from keywords or codes."
+    },
+    "function": {
+      "type": ["string", "null"],
+      "description": "Free-text role of the point, e.g. energimaaling, temperatur, settpunkt, status, kommando, utgang, inngang."
+    },
+    "measurement_type": {
+      "type": ["string", "null"],
+      "enum": ["energi", "effekt", "temperatur", "volum", "trykk", "kostnad", "co2", "status", "kommando", "annet", null],
+      "description": "What is being measured/represented."
+    },
+    "unit": {
+      "type": ["string", "null"],
+      "description": "Unit if known (kWh, °C, NOK, kg, m3...). Often absent from the label and must be inferred from data or documentation."
+    },
+    "object_type": {
+      "type": ["string", "null"],
+      "enum": ["AV", "BV", "MV", "AI", "AO", "BI", "BO", "MI", "MO", null],
+      "description": "BACnet object type when source_type is bacnet. Verify against the value distribution (AV-as-binary trap)."
+    },
+    "primary_system": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "NS 3451 system, when identifiable.",
+      "properties": {
+        "code": { "type": "string", "description": "NS 3451 system code (3- or 4-digit)." },
+        "description": { "type": "string", "description": "Human-readable system meaning." }
+      },
+      "required": ["code"]
+    },
+    "subsystem": {
+      "type": ["string", "null"],
+      "description": "Subsystem code/description (e.g. NNN.NNN, or undernummer meaning like tur/retur, tilluft/avtrekk)."
+    },
+    "component": {
+      "type": ["string", "null"],
+      "description": "NS 3457-8 component (3-letter code) or component description, when present."
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "building": { "type": ["string", "null"], "description": "Building number/name." },
+        "zone": { "type": ["string", "null"], "description": "Zone/floor/room if available." }
+      },
+      "required": ["building", "zone"]
+    },
+    "is_derived": {
+      "type": "boolean",
+      "description": "True for computed/virtual series (e.g. a cost built from several price components), false for a measured quantity."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Calibrated overall confidence in this decoding."
+    },
+    "reasoning": {
+      "type": ["string", "null"],
+      "description": "Short justification for the decoding, so mistakes are traceable."
+    },
+    "data_checks": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Optional results of cross-checking the name hypothesis against the measurement data.",
+      "properties": {
+        "temp_correlation": { "type": ["number", "null"], "description": "Correlation with outdoor temperature, if computed." },
+        "distinct_values": { "type": ["integer", "null"], "description": "Count of distinct values (2 suggests binary)." },
+        "monotonic": { "type": ["boolean", "null"], "description": "Whether the series is monotonically increasing (suggests a cumulative meter)." },
+        "conflict": { "type": ["boolean", "null"], "description": "True if the data contradicts the name-based guess." }
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "description": "Links to other labels (same system/component/location, aggregate-of, feeds, etc.). Empty until relationship inference is added.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "description": "Relationship kind, e.g. same_system, aggregate_of, feeds." },
+          "target_raw_label": { "type": "string", "description": "raw_label of the related point." }
+        },
+        "required": ["type", "target_raw_label"]
+      }
+    },
+    "validated": {
+      "type": "boolean",
+      "description": "True only after a human has confirmed this decoding."
+    }
+  },
+  "required": ["raw_label", "source_type", "confidence", "validated"]
+}
