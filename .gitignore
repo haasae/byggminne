@@ -3,16 +3,21 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+.venv-marker
+venv-marker/
 *.egg-info/
+docs/*
+docs_md/*
+examples/*
+schema/*
+CLAUDE.md
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Raw building data can be large — track the folder, not the dumps.
-# Comment out the next line if you DO want CSVs in git.
-# NB: needs `**` to recurse into subfolders (e.g. data/raw/skoyen/, data/raw/tasen/).
-data/raw/**/*.csv
+# Raw building data can be large, so we track the folder, not the dumps.
+data/raw/*
 
 # Keep empty tracked folders
 !**/.gitkeep

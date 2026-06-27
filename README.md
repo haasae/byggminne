@@ -20,6 +20,10 @@ pip install -r requirements.txt
 Always read CSVs as UTF-8 (Norwegian æ/ø/å). On Windows:
 `PYTHONIOENCODING=utf-8`.
 
+Put your data into data/raw
+
+If you wish to add your own documents to give context to the LLM, add them to `docs/`. Then turn them to .md-files however you want and add to `docs_md`. The purpose of this is that it is easier for the LLM to understand the context if it is given as .md-files instead of PDF's.
+
 ## Layout
 
 - `schema/decoded_label.schema.json` — the output contract every decoded label

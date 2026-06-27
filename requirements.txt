@@ -1,5 +1,5 @@
 # Real third-party dependencies only.
-# (The pilot wrongly pinned stdlib modules like re/json — do not do that.)
+
 pandas
 numpy
 scikit-learn
