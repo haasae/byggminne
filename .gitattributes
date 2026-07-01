@@ -1,0 +1,9 @@
+# Normalize all text files to LF in the repo and check them out as LF on Windows.
+# This keeps line endings consistent across machines
+* text=auto eol=lf
+
+# Binary files should be treated as binary and not have line endings normalized.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
