@@ -1,15 +1,28 @@
-"""Layer 1 helper: stream (possibly multi-GB) CSVs and emit unique labels.
+"""Layer 1 helper: stream (possibly huge) CSVs and return unique labels.
 
-Because the CSVs are huge with millions of rows, we expect the unique labels to be a small subset. 
-To avoid having to decode identical labels multiple times, we extract the unique labels and save them to a text file.
-Afterwards, the decode can reuse the unique labels file to avoid decoding the same label multiple times.
+The CSVs have millions of rows, but we expect only a small set of distinct
+labels. We stream the files, extract that unique set, and write it to a text
+file so the decode step can reuse it instead of decoding the same label
+many times over.
 
-The raw files are `label,timestamp,value` with no header and can be gigabytes, so
-we iterate line by line. The label is column 1 and may contain ':', '/', '.', '-', '#' (but not commas), so we rsplit from the
-right to peel off timestamp + value. 
+Line format (no header): `label,timestamp,value`.
+The label is column 1 and may contain ':', '/', '.', '-', '#' but never commas,
+so we rsplit each line to peel `timestamp` and `value` off the right and keep
+everything before them as the label.
 
+Usage (Tasen is just an example dataset; any CSV in this format works):
+
+    # All CSVs in a directory -> labels.txt
     python -m src.extract.unique_labels "data/raw/tasen/*.csv" -o labels.txt
+
+    # A single CSV -> labels.tsv, with occurrence counts, sorted descending
     python -m src.extract.unique_labels data/raw/tasen/file.csv -o labels.tsv --with-counts
+
+    -o             output file
+    --with-counts  include per-label occurrence counts in the output
+    (-m is Python's own flag for running a module as a script, not a flag of this tool)
+
+    .tsv is tab-separated, so it imports cleanly into Excel or other spreadsheets.
 """
 
 import argparse # for command line argument parsing
@@ -92,6 +105,9 @@ def main() -> int:
     Main function to parse command line arguments, collect unique labels from CSV files, and write them to an output file.
     We describe what the command accepts, parse it, turn it into real file paths, read every file and count the labels, write the results to the output file.
     Afterwards, the decode can reuse the unique labels file to avoid decoding the same label multiple times.
+
+    Returns:   
+        int: Exit code (0 for success).
     """
 
     configure_stdout_utf8()
