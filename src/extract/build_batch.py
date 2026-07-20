@@ -1,32 +1,27 @@
-""" 
-Takes the text file created by `unique_labels` and reshapes it into JSON Lines for the decoder. 
-Each line is a JSON object with two fields: `raw_label` and `source_type`. 
-The `source_type` is provided by the user on the command line and can be one of "kiona", "bacnet", or "other". 
-Possible source types may be expanded in the future, but for now the decoder will only see these three values.
+""" Layer 2 helper: build a batch of decoder input from a list of unique labels.
 
-It produces a file called `input.jsonl` that can be used as input to the decoder. 
-The decoder will read this file and produce an output file called `outputs.jsonl`.
-In `input.jsonl` an output line looks like this:
-{"raw_label": "some label", "source_type": "bacnet"}
+Takes the text file created by `unique_labels` and reshapes it into JSON Lines
+for the decoder. Each line is a JSON object with two fields, `raw_label` and
+`source_type`:
 
-The input.jsonl deliberately holds NO semantic fields -- only what the decoder is allowed to see.
+    {"raw_label": "some label", "source_type": "bacnet"}
+
+`source_type` is passed on the command line and is currently one of "kiona",
+"bacnet", or "other". The set may grow later, but for now the decoder only ever
+sees these three.
+
+The batch deliberately carries NO semantic fields -- only what the decoder is
+allowed to see. It's written to the path given by -o (conventionally
+`input.jsonl`); the decoder later reads that file and emits its own `outputs.jsonl`
+
+Usage:
 
     python -m src.extract.build_batch labels.txt --source-type bacnet \
         -o data/eval/batches/b001/input.jsonl
 """
 
 import argparse
-import sys
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-
-"""
-- sys.path.insert(0, ...) inserts this directory path at index 0, which is the front of the list of directories Python searches for modules. 
-This allows us to import modules from the src directory.
-- __file__ is this file's own path (.../src/extract/unique_labels.py).
-- .parents[2] goes up two levels to the root of the project (the parent of src).
-"""
 
 from src.common.io_utils import configure_stdout_utf8, write_jsonl
 
