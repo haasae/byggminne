@@ -6,18 +6,37 @@ venv/
 .venv-marker
 venv-marker/
 *.egg-info/
-docs/*
-docs_md/*
-examples/*
-schema/*
-CLAUDE.md
+.pytest_cache/
 
 # OS
 .DS_Store
 Thumbs.db
 
+# Source PDFs (reference material. The converted markdown lives in knowledge_base/)
+docs/*.pdf
+
+# Internal working material for specific calls/reviews, not user documentation.
+docs/showcase_demo_script.md
+docs/expert_validation_sheet.md
+
+# NS standards are copyrighted (Standard Norge) — the converted markdown stays
+# local. Supply your own copies; see README.
+knowledge_base/NS-3451_dir/
+knowledge_base/NS-3457_dir/
+
 # Raw building data can be large, so we track the folder, not the dumps.
 data/raw/*
+data/training/*
+
+# Decode runs are regenerable outputs (outputs.jsonl, report, errors)
+runs/
 
 # Keep empty tracked folders
 !**/.gitkeep
+
+# Local Claude Code state stays private, but the /decode and /enrich skills
+# are part of the pipeline (the LLM leg) and ship with the repo.
+.claude/*
+!.claude/skills/
+claude/
+goals.md
