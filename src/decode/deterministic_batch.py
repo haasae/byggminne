@@ -1,7 +1,7 @@
 """Layer 2 driver: decode a batch deterministically, cheapest first.
 
 Per label: validated-store exact hit -> rules engine -> sibling inheritance
-(rules-resolved fields win; siblings fill nulls). Labels that stay below the
+(rules-resolved fields win, siblings fill nulls). Labels that stay below the
 usefulness bar go to residue.jsonl for the LLM layer -- this driver NEVER
 calls an LLM and never spends tokens.
 
@@ -27,6 +27,8 @@ MIN_CONFIDENCE = 0.4
 
 
 def _tier_of(instance):
+    """Determine the tier of a schema instance based on resolved key fields."""
+
     key_fields = (instance.get("primary_system"), instance.get("component"),
                   instance.get("function"), instance.get("measurement_type"))
     resolved = sum(1 for f in key_fields if f is not None)
@@ -34,7 +36,21 @@ def _tier_of(instance):
 
 
 def decode_deterministic(raw_label, source_type, store_path=None):
-    """One label through store -> rules -> sibling. Returns (instance, tier, method)."""
+    """One label through store -> rules -> sibling. Returns (instance, tier, method).
+    Decodes a single raw label deterministically, using the validated store, rules engine, 
+    and sibling inheritance. Returns a tuple containing the decoded schema instance, 
+    its tier, and the method used for decoding.
+
+    Args:
+        raw_label (str): The raw label to decode.
+        source_type (str): The source type of the label.
+        store_path (str, optional): Path to the validated store. Defaults to None.
+
+    Returns:
+        tuple: A tuple containing the decoded schema instance (dict), its tier (str), 
+        and the method used for decoding (str).
+    """
+
     hit = retrieve(raw_label, store_path)
     if hit is not None and hit[0] == "exact":
         instance = dict(hit[1])
@@ -67,7 +83,17 @@ def run(input_path, out_dir, schema_path=None, store_path=None):
 
     `store_path` overrides the validated-decodes store (used by tests to stay
     hermetic); None means the repo store.
+
+    Args:
+        input_path (str): Path to the input JSONL file containing raw labels.
+        out_dir (str): Directory where output files will be written.
+        schema_path (str, optional): Path to the schema file for validation. Defaults to None
+        store_path (str, optional): Path to the validated store. Defaults to None.
+
+    Returns:
+        dict: A dictionary containing metadata about the decoding run, including counts of decoded labels, residue
     """
+
     rows = read_jsonl(input_path)
     _, kb_version = build_context_pack()
     validator = build_validator(schema_path)
@@ -154,6 +180,11 @@ def run(input_path, out_dir, schema_path=None, store_path=None):
 
 
 def main() -> int:
+    """Main function to parse command line arguments and run the deterministic batch decode.
+    Parses command line arguments for input file, output directory, schema path, and store path.
+    Calls the `run` function to perform the deterministic batch decode and prints a summary of the run.
+    """
+    
     configure_stdout_utf8()
     ap = argparse.ArgumentParser(
         description="Deterministic batch decode (rules + retrieval, zero LLM tokens)."
@@ -161,9 +192,10 @@ def main() -> int:
     ap.add_argument("--input", required=True, help="batch input.jsonl")
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--schema", help="schema path (defaults to schema/decoded_label.schema.json)")
+    ap.add_argument("--store", help="store path (defaults to the repo store)")
     args = ap.parse_args()
 
-    meta = run(args.input, args.out_dir, args.schema)
+    meta = run(args.input, args.out_dir, args.schema, store_path=args.store)
     print(f"decoded {meta['decoded']}/{meta['n']} deterministically "
           f"({meta['methods']}), residue {meta['residue']} -> {args.out_dir}")
     return 0
