@@ -1,0 +1,91 @@
+{
+  "_comment": "Curated machine rules for the deterministic decoder (Layer 2). Keyword keys are matched case-insensitively against the label's point-name tokens. NO point-specific facts here: those live in validated_decodes.jsonl / data_observations.md. Cited as deterministic_rules.json:<section>.<key>.",
+
+  "point_name_keywords": {
+    "drift": {"function": "status", "measurement_type": "status"},
+    "alarm": {"function": "alarm", "measurement_type": "status"},
+    "alarn": {"function": "alarm", "measurement_type": "status", "_comment": "observed typo for alarm in Tasen labels"},
+    "feil": {"function": "feil (fault)", "measurement_type": "status"},
+    "modus": {"function": "modus (mode)", "measurement_type": "status"},
+    "utlost_vern": {"function": "utlost vern (tripped protection)", "measurement_type": "status"},
+    "utløst_vern": {"function": "utlost vern (tripped protection)", "measurement_type": "status"},
+    "status": {"function": "status", "measurement_type": "status"},
+    "settpunkt": {"function": "settpunkt"},
+    "setpoint": {"function": "settpunkt"},
+    "set point": {"function": "settpunkt"},
+    "spkt": {"function": "settpunkt"},
+    "borverdi": {"function": "settpunkt"},
+    "børverdi": {"function": "settpunkt"},
+    "temperature": {"function": "temperatur", "measurement_type": "temperatur"},
+    "temperatur": {"function": "temperatur", "measurement_type": "temperatur"},
+    "co2": {"function": "CO2-maaling (luftkvalitet)", "measurement_type": "co2", "unit": "ppm"},
+    "kjole": {"carrier": "kjoling"},
+    "kjøle": {"carrier": "kjoling"},
+    "kjoling": {"carrier": "kjoling"},
+    "kjøling": {"carrier": "kjoling"},
+    "varme": {"carrier_hint": "varme (heating context; carrier itself needs el/fjernvarme evidence)"},
+    "heating": {"system_hint": "320"},
+    "spillvannspumpe": {"carrier": "vann", "component": "spillvannspumpe (pumpe)"},
+    "spillvann": {"carrier": "vann"},
+    "drenspumpe": {"carrier": "vann", "component": "drenspumpe (pumpe)"},
+    "vannstand": {"carrier": "vann"},
+    "tappevann": {"measurement_type": null, "carrier": "vann"},
+    "avrim": {"function": "avriming (defrost)", "measurement_type": "status"},
+    "komp": {"function": "kompressor-relatert"},
+    "fjernvarme": {"carrier": "fjernvarme"},
+    "elkjele": {"carrier": "el"},
+    "hovedtavle": {"carrier": "el", "_comment": "hovedtavle = main electrical distribution board (CLAUDE.md keyword list: lys/strom = electrical; observed in Skoyen WM02_Energi_Hovedtavle)"},
+    "energi": {"function": "energimaaling", "measurement_type": "energi"},
+    "utetemperatur": {"function": "utetemperatur", "measurement_type": "temperatur"},
+    "utelufttemperatur": {"function": "utetemperatur", "measurement_type": "temperatur"},
+    "_comment_rejected_keywords": "'strom'/'strøm' -> carrier el is deliberately ABSENT: as a substring it collides with 'overstrømning' (NS 36xx undernummer .07, CLAUDE.md section 3). Add a longer, specific form (e.g. strommaaler) if data ever shows one.",
+
+    "_comment_swegon": "Swegon WISE room-control grammar (Skoyen): per-room comfort setpoints and airflow parameters. H/C = heating/cooling sequence, Occ/Uocc = occupied/unoccupied, natt/morgen = night/morning setback.",
+    "swegon wise": {"system_hint": "360"},
+    "h temp occ": {"function": "settpunkt (varme, tilstede)", "measurement_type": "temperatur"},
+    "h temp uocc": {"function": "settpunkt (varme, ikke tilstede)", "measurement_type": "temperatur"},
+    "c temp occ": {"function": "settpunkt (kjoling, tilstede)", "measurement_type": "temperatur", "carrier": "kjoling"},
+    "c temp uocc": {"function": "settpunkt (kjoling, ikke tilstede)", "measurement_type": "temperatur", "carrier": "kjoling"},
+    "temp natt": {"function": "settpunkt (nattsenking)", "measurement_type": "temperatur"},
+    "temp morgen": {"function": "settpunkt (morgen)", "measurement_type": "temperatur"},
+    "flow": {"measurement_type": "volum"},
+    "vav": {"measurement_type": "volum"},
+    "setp": {"function": "settpunkt"},
+    "slave": {"function": "grenseverdi (slave-parameter)"}
+  },
+
+  "setpoint_suffixes": {
+    "_SP": {"function": "settpunkt"},
+    "_WSP": {"function": "settpunkt", "_comment": "Working Set Point (grammar glossary)"}
+  },
+
+  "system_carrier": {
+    "37": "kjoling",
+    "_comment": "NS 3451 system prefix -> carrier, applied only when carrier is still null: the medium follows from the system for 37xx (kjoling, TFM systemkodeliste 370). Deliberate omissions: 32xx heating carrier is el OR fjernvarme and needs keyword evidence (the pilot's 310 lesson: semantics live in the text); 36xx air has no matching value in the schema carrier enum. Also rejected: IK -> cooling system (komponentkodeliste.md line 309: IK = Kuldeaggregat covers Kjolemaskin, Frysemaskin AND Varmepumpe -- a heat pump is not a cooling system)."
+  },
+
+  "component_letter_measurement": {
+    "RT": "temperatur",
+    "RI": "temperatur",
+    "RD": "trykk",
+    "RP": "trykk",
+    "RQ": "trykk",
+    "RY": "co2",
+    "RH": "annet",
+    "RF": "volum",
+    "RN": "annet",
+    "RE": "effekt"
+  },
+
+  "side_digit_subsystem": {
+    "4": "tur/tilluft (supply)",
+    "5": "retur/fraluft (return)",
+    "_comment": "Only applied when the component code has THREE digits (grammar: confirmed for 2-letter code + 3 digits). Convention is a hint -- data can override (see data_observations.md, FCB RT401)."
+  },
+
+  "command_object_types": {
+    "AO": {"measurement_type": "kommando", "function": "utgang (analogt paadrag)"},
+    "BO": {"measurement_type": "kommando", "function": "utgang (binaer kommando)"},
+    "BI": {"measurement_type": "status", "function": "status (binaer inngang)"}
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "release": "1.4",
+  "source_url": "https://brickschema.org/schema/1.4/Brick.ttl",
+  "retrieved": "2026-07-04",
+  "n_classes": 1436,
+  "generator": "python -m src.brick.build_class_list"
+}

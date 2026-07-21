@@ -1,0 +1,53 @@
+{
+  "_comment": "Curated mapping from decoded-label fields to Brick Schema classes, used by src/brick/. Same doctrine as deterministic_rules.json: every entry cites its source, unknown maps to the generic base class (Point / Equipment / System) -- NEVER invent a more specific class. Cited as brick_mapping.json:<section>.<key>. Every class name here must exist in knowledge_base/brick_dir/brick_classes.txt (enforced by tests/test_brick_mapping.py).",
+
+  "brick_version": "1.4",
+
+  "system_prefix_class": {
+    "_comment": "First 2 digits of the 4-digit NS 3451 code -> Brick system class.",
+    "31": {"class": "Water_System", "_source": "TFM 310 Sanitaerinstallasjoner; conservative: NS 31xx covers cold + hot + drainage (the pilot's 310 lesson, CLAUDE.md sec 3), so no Domestic_Hot_Water claim from the code alone"},
+    "32": {"class": "Hot_Water_System", "_source": "TFM 320 Varmeanlegg; medium data-confirmed as water (data_observations.md: Tasen 320001 heating supply r=-0.80 vs outdoor)"},
+    "36": {"class": "Ventilation_Air_System", "_source": "TFM 360 Luftbehandling (CLAUDE.md sec 3: 3600 air handling)"},
+    "37": {"class": "Chilled_Water_System", "_source": "TFM 370 Kjoling"},
+    "43": {"class": "Electrical_System", "_source": "TFM 43x elkraft fordeling (CLAUDE.md sec 3: 4320/4330/4340 electrical distribution)"}
+  },
+
+  "point_class_rules": [
+    {"when": {"function_contains": "settpunkt", "measurement_type": "temperatur"}, "class": "Temperature_Setpoint", "_source": "settpunkt keyword/suffix (deterministic_rules.json) + measurement_type temperatur"},
+    {"when": {"function_contains": "settpunkt"}, "class": "Setpoint", "_source": "settpunkt/borverdi keyword or _SP/_WSP suffix (deterministic_rules.json:setpoint_suffixes)"},
+    {"when": {"function_contains": "grenseverdi"}, "class": "Limit", "_source": "Swegon slave-parameter = grenseverdi (deterministic_rules.json:point_name_keywords.slave)"},
+    {"when": {"function_contains": "alarm"}, "class": "Alarm", "_source": "alarm keyword (deterministic_rules.json:point_name_keywords.alarm)"},
+    {"when": {"measurement_type": "kommando"}, "class": "Command", "_source": "AO/BO object types and kommando decodes (deterministic_rules.json:command_object_types)"},
+    {"when": {"measurement_type": "status"}, "class": "Status", "_source": "drift/status/feil/modus keywords -> status (deterministic_rules.json:point_name_keywords)"},
+    {"when": {"measurement_type": "trykk", "component_letters": "RD"}, "class": "Differential_Pressure_Sensor", "_source": "RD = Differansetrykkgiver (komponentkodeliste.md line 558)"},
+    {"when": {"measurement_type": "temperatur"}, "class": "Temperature_Sensor", "_source": "RT = Temperaturgiver (komponentkodeliste.md line 574) / temperatur keyword"},
+    {"when": {"measurement_type": "trykk"}, "class": "Pressure_Sensor", "_source": "RP = Trykkgiver (komponentkodeliste.md line 570)"},
+    {"when": {"measurement_type": "co2"}, "class": "CO2_Sensor", "_source": "RY / co2 keyword (deterministic_rules.json:point_name_keywords.co2)"},
+    {"when": {"measurement_type": "volum"}, "class": "Flow_Sensor", "_source": "RF = mengdemaaler / flow keywords (deterministic_rules.json)"},
+    {"when": {"measurement_type": "energi"}, "class": "Energy_Sensor", "_source": "energi keyword (deterministic_rules.json:point_name_keywords.energi)"},
+    {"when": {"measurement_type": "effekt"}, "class": "Power_Sensor", "_source": "RE component letter -> effekt (deterministic_rules.json:component_letter_measurement)"},
+    {"_comment": "Ordered list, FIRST match wins (so Temperature_Setpoint beats Temperature_Sensor). No match -> Point: never invent a class."}
+  ],
+
+  "equipment_letter_class": {
+    "_comment": "NS 3457-8 component letters -> Brick equipment class, for tokens that name a whole device (equipment tokens / same_equipment group keys).",
+    "LR": {"class": "Variable_Frequency_Drive", "_source": "LR = Frekvensomformer (komponentkodeliste.md line 412)"},
+    "JP": {"class": "Pump", "_source": "JP = Pumpe (komponentkodeliste.md line 346)"},
+    "JV": {"class": "Fan", "_source": "JV = Vifte (komponentkodeliste.md line 352)"},
+    "SB": {"class": "Valve", "_source": "SB = Reguleringsventil, motorstyrt (komponentkodeliste.md line 588)"},
+    "IK": {"class": "Equipment", "_source": "IK = Kuldeaggregat (komponentkodeliste.md line 309) DELIBERATELY generic: the code covers Kjolemaskin, Frysemaskin AND Varmepumpe -- claiming Chiller would over-claim; needs per-point evidence"}
+  },
+
+  "equipment_token_class": {
+    "_comment": "Case-insensitive substring of an equipment token -> Brick class, for tokens without NS letters.",
+    "pumpe": {"class": "Pump", "_source": "Norwegian 'pumpe' in equipment tokens like Spillvannspumpe_P2 / Drenspumpe_P1 (bacnet_sd_label_grammar.md glossary)"}
+  },
+
+  "unit_map": {
+    "_comment": "Decoded unit string -> QUDT unit local name (http://qudt.org/vocab/unit/). NOK (cost) has no QUDT energy unit -> unmapped.",
+    "°C": {"unit": "DEG_C", "_source": "QUDT unit vocabulary, degree Celsius"},
+    "ppm": {"unit": "PPM", "_source": "QUDT unit vocabulary, parts per million"},
+    "kWh": {"unit": "KiloW-HR", "_source": "QUDT unit vocabulary, kilowatt-hour"},
+    "Pa": {"unit": "PA", "_source": "QUDT unit vocabulary, pascal"}
+  }
+}
