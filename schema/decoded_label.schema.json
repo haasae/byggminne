@@ -43,7 +43,7 @@
       "additionalProperties": false,
       "description": "NS 3451 system, when identifiable.",
       "properties": {
-        "code": { "type": "string", "description": "NS 3451 system code (3- or 4-digit)." },
+        "code": { "type": "string", "description": "NS 3451 system code, always the 4-digit form on output (resolve legacy 3-digit input like 320 to 3200)." },
         "description": { "type": "string", "description": "Human-readable system meaning." }
       },
       "required": ["code"]
@@ -54,11 +54,12 @@
     },
     "component": {
       "type": ["string", "null"],
-      "description": "NS 3457-8 component (3-letter code) or component description, when present."
+      "description": "NS 3457-8 component: a 2-letter function code, usually with a 3-digit number (e.g. RT401), or a component description, when present."
     },
     "location": {
-      "type": "object",
+      "type": ["object", "null"],
       "additionalProperties": false,
+      "description": "Where the point lives. Null when nothing about the location is known; otherwise an object whose unknown members are null.",
       "properties": {
         "building": { "type": ["string", "null"], "description": "Building number/name." },
         "zone": { "type": ["string", "null"], "description": "Zone/floor/room if available." }
@@ -66,8 +67,8 @@
       "required": ["building", "zone"]
     },
     "is_derived": {
-      "type": "boolean",
-      "description": "True for computed/virtual series (e.g. a cost built from several price components), false for a measured quantity."
+      "type": ["boolean", "null"],
+      "description": "True for computed/virtual series (e.g. a cost built from several price components), false for a measured quantity, null when it cannot be determined."
     },
     "confidence": {
       "type": "number",
@@ -106,6 +107,15 @@
     "validated": {
       "type": "boolean",
       "description": "True only after a human has confirmed this decoding."
+    },
+    "decode_method": {
+      "type": ["string", "null"],
+      "enum": ["rules", "retrieval", "rules+retrieval", "llm", "rules+llm", "retrieval+llm", "rules+retrieval+llm", "human", null],
+      "description": "Which decoder layer produced this instance (cheapest-first: rules -> retrieval -> llm; '+llm' = deterministic decode with null fields filled by LLM enrichment; human = manual). Optional; null/absent on legacy instances."
+    },
+    "decoded_kb_version": {
+      "type": ["string", "null"],
+      "description": "kb_version (context-pack hash) in force when this decode was produced, for attributability. Optional."
     }
   },
   "required": ["raw_label", "source_type", "confidence", "validated"]

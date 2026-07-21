@@ -1,40 +1,30 @@
 """Validate every example instance against the decoded-label schema.
 
-Run from the repo root:  python src/validate/validate_examples.py
+Run from the repo root:  python -m src.validate.validate_examples
+Thin wrapper over src.validate.schema_validator (restores the original script).
 """
-import json
-import sys
-from pathlib import Path
-
-try:
-    from jsonschema import Draft202012Validator
-except ImportError:
-    sys.exit("Missing dependency. Run: pip install -r requirements.txt")
-
-ROOT = Path(__file__).resolve().parents[2]
-SCHEMA_PATH = ROOT / "schema" / "decoded_label.schema.json"
-EXAMPLES_DIR = ROOT / "examples"
+from src.common.io_utils import configure_stdout_utf8, repo_root
+from src.validate.schema_validator import build_validator, validate_file
 
 
 def main() -> int:
-    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
-    validator = Draft202012Validator(schema)
+    configure_stdout_utf8()
+    validator = build_validator()
+    examples_dir = repo_root() / "examples"
 
     failures = 0
-    for path in sorted(EXAMPLES_DIR.glob("*.json")):
-        instance = json.loads(path.read_text(encoding="utf-8"))
-        errors = sorted(validator.iter_errors(instance), key=lambda e: e.path)
+    for path in sorted(examples_dir.glob("*.json")):
+        errors = validate_file(path, validator)
         if errors:
             failures += 1
             print(f"[FAIL] {path.name}")
-            for err in errors:
-                loc = "/".join(str(p) for p in err.path) or "(root)"
-                print(f"        {loc}: {err.message}")
+            for loc, msg in errors:
+                print(f"        {loc}: {msg}")
         else:
             print(f"[ OK ] {path.name}")
 
     print("-" * 40)
-    print(f"{'All examples valid.' if not failures else f'{failures} file(s) failed.'}")
+    print("All examples valid." if not failures else f"{failures} file(s) failed.")
     return 1 if failures else 0
 
 

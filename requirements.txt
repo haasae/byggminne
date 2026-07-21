@@ -1,8 +1,13 @@
-# Real third-party dependencies only.
+# Real third-party dependencies only, pinned.
+# pandas/numpy/statsmodels et al. return when the data cross-check layer
+# (CLAUDE.md section 4, src/profile/) is actually built -- nothing in src/
+# imports them today.
 
-pandas
-numpy
-scikit-learn
-statsmodels
-jsonschema
-matplotlib
+jsonschema==4.26.0
+pytest==9.1.1
+
+# Knowledge-graph emitter (src/brick/): Brick Schema graphs as Turtle.
+rdflib==7.6.0
+
+# Only needed for the side tools in src/PDF-parser/ (not the decode pipeline).
+pymupdf==1.27.2.3
