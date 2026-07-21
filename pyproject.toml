@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "label-decoder"
+version = "0.1.0"
+description = "Decode unstructured building-energy measurement labels into structured, schema-validated JSON."
+requires-python = ">=3.10"
+license = "Apache-2.0"
+# Runtime deps only; the dev environment installs requirements.txt (pinned).
+dependencies = ["jsonschema", "rdflib"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+# Only for the side tools in src/PDF-parser/ (not the decode pipeline).
+pdf = ["pymupdf"]
+
+# The import package is `src` (imports are `src.decode`, `src.score`, ...);
+# listed explicitly so setuptools does not mistake the layout for src-layout.
+# src/PDF-parser is standalone scripts, not a package, and is not listed.
+[tool.setuptools]
+packages = [
+    "src",
+    "src.brick",
+    "src.common",
+    "src.decode",
+    "src.eval",
+    "src.extract",
+    "src.profile",
+    "src.score",
+    "src.validate",
+]
