@@ -16,10 +16,7 @@ instead.
         --out-dir runs/<id> --model <model-id>
 """
 import argparse
-import sys
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 # I/O helpers, the context pack, the per-label decoder, the runner, and the validator
 from src.common.io_utils import (
