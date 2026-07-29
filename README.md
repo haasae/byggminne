@@ -12,6 +12,10 @@ This codebase creates a pipeline that does the following:
 1. Decodes unstructured building-energy measurement labels into a structured, machine-readable format.
 2. Translates structured labels into Brick Schema-format.
 3. Creates a knowledge graph from the Brick Schema-code to be used in flexibility calculations.
+4. Analyzes room-heating timeseries (`src/heating/`) to derive data-verified
+   facts — gain regime, heating type, thermal response time, an energy proxy —
+   and enriches the knowledge graph with them (Turtle per building, plus a
+   Neo4j export). See `docs/ROOM_HEATING_PLAN.md` for the design and status.
 
 A "label" is a point name from a building data system. More specifically, it's an
 unstructured (mostly Norwegian) string encoding building, system, subsystem,
@@ -66,8 +70,7 @@ under `runs/`. How to read the metrics honestly: `docs/EVALUATION.md`.
 2. Convert them to machine-readable Markdown and put each under
    `knowledge_base/<name>_dir/<name>.md`. This is where the decoder reads its
    reference material from. LLMs read Markdown far better than PDFs. This is
-   not always easy. `docs/PDF-to-Markdown.md` collects notes on it (work in
-   progress), and `src/PDF-parser/` has two optional helper scripts
+   not always easy; `src/PDF-parser/` has two optional helper scripts
    (`pip install pymupdf`).
 3. Extract the unique labels from your CSVs and build a decoder batch:
    `python -m src.extract.unique_labels data/raw/<file>.csv -o labels.txt`, then
@@ -118,13 +121,41 @@ label-decoder/
 │   ├── score/                     # metrics, alignment, reports
 │   ├── eval/                      # one-command decode → score → summary driver
 │   ├── brick/                     # Brick mapping, Turtle graph emitter, readiness report
+│   ├── heating/                   # room-heating flexibility pipeline (zone table, regimes, tau, graph enrichment, Neo4j export)
 │   ├── validate/                  # schema validation
 │   ├── common/                    # shared IO/token helpers
 │   └── PDF-parser/                # optional PDF→Markdown side tools (pymupdf)
-├── tests/                         # pytest suite + gold sets (tests/gold/<id>/)
-├── docs/                          # evaluation guide, output explainer, conversion notes
+├── tests/                         # pytest suite + gold sets (tests/gold/<id>/) + synthetic fixtures
+├── docs/                          # evaluation guide, output explainer, heating plan, parser analysis
 └── .claude/skills/                # /decode and /enrich — the LLM leg (Claude Code)
 ```
+
+## Documentation map
+
+**Using the pipeline (read in this order):**
+- `README.md` — this file: what it is, setup, quick start.
+- `docs/EVALUATION.md` — how decoding quality is measured; the cold-start rule.
+- `docs/output_explainer.md` — how to read one decoded label (methods, confidence, tier).
+- `schema/README.md` — the output contract, field by field (`examples/` has three worked instances).
+
+**Design & findings:**
+- `docs/ROOM_HEATING_PLAN.md` — the room-heating flexibility pipeline: plan, phases, status.
+- `docs/tokenizer_failure_modes.md` — what the deterministic parser can't do and why.
+- `knowledge_base/data_observations.md` — data-confirmed label facts (the "name = hypothesis, data = test" journal).
+
+**Decoder reference (the LLM's context pack — humans welcome too):**
+- `CLAUDE.md` — the project map: architecture, label grammar, cross-check rules.
+- `knowledge_base/decode_rules.md` — decode rules and code enumerations.
+- `knowledge_base/bacnet_sd_label_grammar.md` — positional grammar for BACnet/SD labels.
+- `knowledge_base/komponentkodeliste_dir/`, `knowledge_base/TFM_systemkodeliste_dir/` — NS component/system code tables.
+- `knowledge_base/control_number_area_map.md` — auto-generated controller→area lookup.
+- Machine stores: `deterministic_rules.json`, `validated_decodes.jsonl`, `brick_mapping.json`, `heating_rules.json`.
+
+**AI procedures:** `.claude/skills/decode/` and `.claude/skills/enrich/` — the LLM leg, run inside Claude Code.
+
+Some reference material is local-only and not in this repo: the copyrighted NS
+standards (see "NS standards" above) and building-specific surveys/indexes for
+the pilot buildings.
 
 ## License
 
@@ -132,4 +163,4 @@ Apache-2.0 — see `LICENSE`.
 
 ## Status
 
-Work in progress as of 21.07.2026.
+Work in progress as of 29.07.2026.
