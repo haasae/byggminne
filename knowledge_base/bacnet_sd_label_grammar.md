@@ -54,7 +54,7 @@ Point-segment layouts (component code embedded in a larger segment):
 
 | Layout | Example | Status |
 |---|---|---|
-| `<sys3>_<ref>-<code>` | `563_H26-SB602` | CONFIRMED structure; `H26`/`D101` ref meaning UNKNOWN (room? circuit?) |
+| `<sys3>_<ref>-<code>` | `563_H26-SB602` | CONFIRMED structure; `H26`/`D101` refs are ROOM identifiers — letter = building/area, digits = room number (BMS UI floor plans, 2026-07-28). `563` recurs as the room-control system prefix (563.00x field controllers) at both source sites. |
 | `<sys3> <lopenr>-<code>` | `320 001-RT401` | CONFIRMED structure (space-separated subsystem + component) |
 | `<sysNNNNNN>_<code>_SP` | `360001_RF401_SP` | CONFIRMED structure (under `Programming`) |
 
@@ -65,11 +65,11 @@ Qualifiers observed AFTER a component code (separator varies: `_`, `-`, space):
 | `%` | `-LR401%`, `-SB401%` | 0-100% command signal (paadrag) -- all under Utganger | HYPOTHESIS |
 | `SP` | `-RP401 SP` | settpunkt (space variant of `_SP`); coexists with `_WSP` on the same system -- configured vs working setpoint? | HYPOTHESIS |
 | `WSP` | `563_H26-RT601-WSP`, `320 003-RT401 WSP` | Working Set Point (glossary above); only the separators are new | CONFIRMED meaning |
-| `SD` | `-RT901_SD`, once per system across 12+ systems | shared sensor sourced from the SD-anlegg, likely outdoor? NOT komponentkodeliste's SD (sprinkler valve) | HYPOTHESIS |
+| `SD` | `-RT901_SD`, once per system across 12+ systems | shared sensor sourced from the SD-anlegg; RT901 UI-verified as the OUTDOOR temperature sensor, and `UTETEMP_SD` point names corroborate the SD reading. NOT komponentkodeliste's SD (sprinkler valve) | CONFIRMED (RT901=outdoor; SD-sourcing corroborated, 2026-07-28) |
 | `St` | `-JP401 St` | pump run status? | HYPOTHESIS |
 | `Eff` | `-LX001 Eff` | heat-recovery efficiency (virkningsgrad) OR power (effekt) | UNCLEAR |
-| `GULV`/`RAD`/`Radkurs`/`TAK` | `-RT401_GULV`, `-SB401%_GULV` | named heating sub-circuit (complete control loop shares the word); NOT a location | HYPOTHESIS |
-| `HALL`/`GARDEROBE` | `-RT601_HALL` | room name on RT6xx room sensors; digit 6 = room/zone series? | HYPOTHESIS |
+| `GULV`/`RAD`/`Radkurs`/`TAK` | `-RT401_GULV`, `-SB401%_GULV` | named heating sub-circuit (complete control loop shares the word); NOT a location. BMS plant graphics label exactly these kurs (Radiatorkurs / Gulvvarme / Strålevarme) | CONFIRMED (UI-verified 2026-07-28) |
+| `HALL`/`GARDEROBE` | `-RT601_HALL` | room name on RT6xx room sensors; digit 6 = room/zone sensor series (RT601 is the room temperature sensor in every room-controller observed at both source sites) | CONFIRMED (2026-07-28) |
 | `Radon` | `-SX401_Radon` | radon concentration (ventilation-controlled) | HYPOTHESIS |
 | `Y1..Y4` + sibling `UTE_X1..X4` / `Turtemp-Y1..Y4` | Settpunkt segments | outdoor-compensation curve breakpoints -- parameters, NOT sensors (do not decode `UTE` as an outdoor sensor) | HYPOTHESIS |
 

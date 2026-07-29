@@ -4,7 +4,7 @@ Facts about specific labels/patterns CONFIRMED by cross-checking against the
 measurement data (`src/profile/`: series_stats, cross_check, seasonal_check) --
 the accumulating feedback loop of CLAUDE.md section 4. Each entry states the
 evidence so it can be trusted (and re-derived) without rerunning the analysis.
-Scope so far: Tasen 2025 exports.
+Scope so far: Tasen + Skoyen 2025 exports and the COLLECTiEF dataset (B01-B07).
 
 ## Outdoor-temperature reference (IMPORTANT decode correction)
 
@@ -92,3 +92,77 @@ Scope so far: Tasen 2025 exports.
 - **`...kj maskin bygg5etg3.BO1`** constant 0 -- an output never commanded.
 - The `-TEST` suffix on IK001 points and their late start (2025-03-03) suggest
   a test/commissioning setup; treat IK001 decodes with modest confidence.
+
+## COLLECTiEF Phase 0 ground-truthing (2026-07-23, src/heating/tz_check.py)
+
+- **Zone timestamps are honest UTC** (the `+00:00` suffix is true). Evidence:
+  B01 setpoint up-step modes shift exactly +59/+60/+60 min from CET (Jan-Mar
+  2023) to CEST (Apr-Jun 2023) in three independent zones (B01-MA-A-1-19/-23/
+  -25) -- the signature of a fixed local-wall-clock schedule logged in UTC.
+  B07's zones were too noisy to vote either way (its only clean steppers are
+  the two known dead-gain zones); no zone voted "local".
+- **Weather/weather.csv is also UTC** despite naive timestamps: first hour
+  with DNI > 5 in June 2023 falls at 01-02h UTC on 27 of 30 days (local CEST
+  would put Aalesund first light at 03-04h). The hourly DNI "peak at 13h" that
+  suggested local time is noise (flat afternoon distribution).
+- **Consequence:** all occupied-hours / schedule logic in src/heating/ must
+  convert UTC -> Europe/Oslo before comparing against wall-clock schedules.
+- **Throughput benchmark (B07, full building):** 43.5M rows / 1.65 GB in
+  305 s = 142k rows/s, 5.4 MB/s (Python-parse-bound, sequential). Fleet
+  extrapolation ~2.5-3 h for all 1050 zone CSVs; scan cache makes re-runs
+  file-granular. Disk OK (95 GB free; dataset already hydrated locally).
+- **Smoke-pair regime validation (B07+B02) passed all channels:** B07 30
+  binary + 2 dead (pins reproduce); duty-vs-outdoor-temp r=-0.57 and
+  duty-vs-main-kWh r=+0.88 (n=372 heating-season days) -- the duty-cycle
+  proxy tracks real electric energy. B02 15 binary + NEW findings the survey
+  never sampled: B02-MA-B-2-26 and B02-MA-B-2-27 dead gain, B02-MA-A-1-5 no
+  data at all; duty-vs-temp r=-0.14 (right sign, weak -- HP+radiant-floor mix
+  plausibly dilutes; watch in fleet validation).
+- **Fleet regime classification (all 784 T-triple zones, 2026-07-23):** every
+  building matches its physical character from signal shape alone -- B01 the
+  only modulating-majority building (150 mod / 37 bin / 11 mixed of 198 live),
+  B02/B03/B05/B06/B07 overwhelmingly binary, B04 genuinely mixed (116 mod /
+  88 bin). Survey check on the full zone table: OK (counts, dead pins, orphan).
+- **NEW: B01 has 44 dead heating zones (~18% of its T-triples)** -- gain
+  constant 0 for the whole 2.5-year period. NOT random: 43/44 cluster in
+  wings A and C, floors 2-4 (C-4:10, C-2:7, A-3:6, A-4:6, C-3:6, A-2:5,
+  C-1:3, B-4:1). Systematic -- plausibly a disabled control group or rooms
+  heated by another system (B01 zones are also fed by VAVs). Flexibility
+  analysis must exclude them; worth asking the advisor/municipality about.
+- **MAJOR: B04's T_Gain is a COOLING actuator in most zones.** Fleet physics
+  gate initially failed on B04 (duty vs outdoor temp r=+0.19); per-zone
+  diagnosis: 126/209 zones are summer-dominant (e.g. B04-MA-C-2-165 winter
+  duty 7.9% vs summer 97.8%). The T-triple header lies for over half the
+  fan-coil building. Fix: per-zone thermal orientation from seasonal duty
+  dominance (heating/cooling/dual/idle; Aalesund's cold summer nights mean
+  mere summer activity is NOT suspicious -- dominance is), persisted in
+  runs/heating/orientation.jsonl; heating analyses use heating-oriented
+  zones only.
+- **Fleet validation (2026-07-23): OK, 0 hard failures.** Heating-oriented
+  duty vs outdoor temp negative in ALL 7 buildings (B01 -0.68, B03 -0.47,
+  B05 -0.47, B07 -0.57; weak-but-right-sign B02 -0.14, B04 -0.06, B06 -0.09).
+  Meter cross-check, all three all-electric buildings: duty tracks main kWh
+  at r=+0.84 (B03), +0.79 (B05), +0.88 (B07). The duty-cycle proxy measures
+  real energy.
+- Orientation side-findings: B01 has 95 idle + 15 cooling + 16 dual T_Gain
+  zones (only 116 of 242 heat); B06 has 42 idle. Idle = <2% duty in both
+  Dec-Feb and Jun-Aug -- candidates for "heating never used" rooms; keep
+  excluded from flexibility, list in the graph with quality flags.
+- **Phase 3 step-response fleet (2026-07-23): pre-registered prediction CONFIRMED.**
+  Electric buildings (B05/B07) cool faster than hydronic (B01/B02): median
+  minutes-to-1K 116 vs 135 (n=105 vs 147 zones with measurable tau).
+  Per-building medians: B07=109, B05=120, B01=132, B03=173, B04=206, B02=266,
+  B06=274. B06 (district heat, 274 min/K) is the slowest -- mass + slow
+  supply temp is the likely driver. B02 (heat-pump+radiant-floor) very slow
+  (266), only 2 zones with tau (highly ambiguous dataset).
+- **Heating-type verdicts (2026-07-23):** floor-slow dominates B01 (131/244),
+  B04 (70/214), B06 (112/133) -- all buildings with slow-responding radiant
+  or hydronic systems. Electric-fast zones found in B05 (24), B06 (11), B07
+  (11), B03 (6) -- likely panel radiators or electric underfloor. B01 has only
+  2 electric-fast zones (confirms primarily hydronic/floor). Ambiguous zones
+  (insufficient events or borderline tau) are a significant fraction in B02/B04
+  -- shallow event counts in those buildings.
+- **Consequence for flexibility ranking:** B07 and B05 have the fastest and most
+  data-rich electric zones; B01/B06 have the largest floor-heated mass (best
+  pre-heating candidates). B04 remains ambiguous on heating type due to the
+  mixed cooling/heating actuator population.

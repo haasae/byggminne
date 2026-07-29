@@ -6,6 +6,16 @@ multi-agent interpretation of every failure cluster against the knowledge
 base and an adversarial review of the newest tokenizer change.
 
 This documents failure **categories** to understand, not labels to patch.
+
+> **Update 2026-07-29:** several Category-1 hypotheses have since been
+> confirmed against BMS UI graphics and value checks — `WSP` = working
+> setpoint (value-verified), the circuit words `_GULV`/`_RAD`/`_TAK` are
+> named heating loops (UI-labeled kurs), and `RT6xx` is a room/zone sensor
+> series (the digit-6 convention). Folding these into
+> `deterministic_rules.json` / the grammar glossary is queued for when the
+> decode layer unfreezes; per the policy below they stay out of the machine
+> rules until then.
+
 Re-run the probe on any new dataset:
 
     python -m src.eval.token_probe data/eval/batches/*/input.jsonl -o runs/token_probe/report.md
@@ -117,7 +127,8 @@ Accepted residual risks, in order:
   patterns + tests -- code, because the deterministic layer cannot read prose.
 - **Semantics** (what `%`, `_SD`, `Eff`, `H26` MEAN): documentation -- grammar
   glossary + `deterministic_rules.json` entries -- added ONLY after expert or
-  data confirmation (see `docs/expert_validation_sheet.md`, section C).
+  data confirmation (tracked in an internal validation sheet, not shipped in
+  this repo).
 - **Unknown vocabulary**: stays null with low confidence and flows to the
   LLM/enrichment layer -- that path existing is itself the robustness
   mechanism for labels we have never seen.

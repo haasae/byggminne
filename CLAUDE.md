@@ -18,6 +18,21 @@ systems. Never hardcode anything specific to one building, vendor, or municipali
 
 **This round's goal (stay narrow):** get the unstructured data we have now into a **structured format** — nothing more. At this time, decoding works by interpreting names (a human *and* Claude-as-machine). The goal is to include  cross-referencing of the measurement data over time to confirm what makes sense. **Update (2026-07): the first Brick slice is now in scope** (user asked): `src/brick/` emits one Turtle graph per building from decoded outputs, driven by `knowledge_base/brick_mapping.json`; the `graph_readiness` report defines "decoded well enough for the graph". Live operation stays out of scope.
 
+**Update (2026-07-22): the room-heating pivot — the current round.** Scope
+narrowed to **room heating only**: the sensor / setpoint / actuator-gain
+triple at room level, with the goal of mapping per-room **energy
+flexibility**. Work happens in a new `src/heating/` module against the
+COLLECTiEF dataset (`knowledge_base/incoming/`, 65 GB, gitignored — never
+`git add`). The deliverable is an **enriched knowledge graph** per building:
+spatial skeleton + the bound triple + our *data-verified* facts (heating
+type, response tau, energy proxy, quality flags) — never a re-print of
+COLLECTiEF's boilerplate ontologies. Plan: `docs/ROOM_HEATING_PLAN.md`.
+Dataset facts: `knowledge_base/collectief_survey.md` (local only — derived
+from the dataset, gitignored like `knowledge_base/collectief_index/`). The decode layer
+(§2.2) is frozen this round; no LLM anywhere in the heating pipeline. The
+label-decoding layers below remain the toolkit for our own buildings
+(Tasen/Skøyen) when transfer happens after Phase 3.
+
 ---
 
 ## 2. Architecture (layered)
@@ -212,6 +227,10 @@ label-decoder/
 - `knowledge_base/NS-3451_dir/NS-3451.md` – National Standard 3451 (**local only** — copyrighted, gitignored; the context pack degrades to a stub without it)
 - `knowledge_base/NS-3457_dir/NS-3457.md` – National Standard 3457 (**local only** — copyrighted, gitignored; same degradation)
 - `knowledge_base/TFM_systemkodeliste_dir/TFM_systemkodeliste.md` — NS 3451 system codes → meaning.
+- `knowledge_base/skoyen_building_survey.md` (**local only** — building-specific, gitignored) — Skøyen skole spatial structure, meters, and Kiona findings (sub-buildings, floors, meter IDs, zone placement).
+- `knowledge_base/tasen_building_survey.md` (**local only** — building-specific, gitignored) — Tåsen BMS survey: OU→360.xxx controller mapping, the OS001 room grammar (bygg+etasje digits), the data-confirmed per-room heating actuators, heating types.
+- `knowledge_base/meter_hierarchies.md` (**local only** — building-specific, gitignored) — district heating meter trees for Tåsen and Skøyen (from `docs/fjernvarmemaalere_skoler.html`, also local only).
+- `knowledge_base/school_index/` (**local only** — building-specific, gitignored) — Neo4j spatial/meter/system index for our own schools. SK.json hand-curated except the generated `rooms` key; TA.json systems/rooms regenerate with `python -m src.heating.tasen_index`. Metasys room data (SK rooms + TA point ids/trend flags) joins in AFTER via `python -m src.heating.metasys_rooms && python -m src.heating.metasys_join`.
 
 ## 10. Future goals
 

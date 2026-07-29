@@ -1,7 +1,9 @@
 # label-decoder — Evaluation & Testing Protocol
 
 *Companion to CLAUDE.md. CLAUDE.md owns the architecture and decode rules; this doc
-owns **how we measure decoding quality**. This is the current round's deliverable.*
+owns **how we measure decoding quality**. It was the deliverable of the evaluation
+round; the decode/eval layer is frozen since the 2026-07 room-heating pivot, so this
+protocol remains current for the label-decoding toolkit.*
 
 > Permanent project facts (system codes, TFM grammar, undernummer semantics, the
 > AV-as-binary trap, encoding rules, Brick-as-future-goal) live in **CLAUDE.md** —
