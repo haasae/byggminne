@@ -15,6 +15,10 @@ dependencies = ["jsonschema", "rdflib"]
 dev = ["pytest"]
 # Only for the side tools in src/PDF-parser/ (not the decode pipeline).
 pdf = ["pymupdf"]
+# The Neo4j leg: src/heating/neo4j_import.py + point_values.py graph lookups.
+graph = ["neo4j"]
+# Plot output of the r/y/u probe (src/heating/ryu_probe.py).
+plots = ["matplotlib"]
 
 # The import package is `src` (imports are `src.decode`, `src.score`, ...);
 # listed explicitly so setuptools does not mistake the layout for src-layout.
@@ -27,6 +31,7 @@ packages = [
     "src.decode",
     "src.eval",
     "src.extract",
+    "src.heating",
     "src.profile",
     "src.score",
     "src.validate",

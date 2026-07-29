@@ -1,0 +1,33 @@
+{
+  "_comment": "All thresholds for src/heating/. Editable when advisor docs arrive; never hardcode these in code. Phase 2 classification thresholds included up front per docs/ROOM_HEATING_PLAN.md.",
+  "dead_gain": {"max_value": 0.0},
+  "stuck_sensor": {"min_rows": 1000, "max_distinct": 3, "max_std": 0.05},
+  "binary_pct_threshold": 0.98,
+  "kn_average_values": [50.0, 33.33, 66.67, 25.0, 75.0, 20.0, 40.0, 60.0, 80.0],
+  "modulating_min_distinct": 500,
+  "modulating_min_interior_pct": 0.2,
+  "gain_saturation_high": 99.0,
+  "setback_levels_c": [10.0, 14.0],
+  "heating_season": {"months": [10, 11, 12, 1, 2, 3, 4], "daily_mean_outdoor_max_c": 12.0},
+  "orientation": {
+    "winter_months": [12, 1, 2],
+    "summer_months": [6, 7, 8],
+    "min_active_duty_pct": 2.0,
+    "dominance_ratio": 1.25
+  },
+  "step_response": {
+    "min_sp_drop_c": 1.0,
+    "gain_off_pct": 5.0,
+    "gain_on_abort_pct": 20.0,
+    "max_window_min": 480,
+    "min_window_for_t63_min": 240,
+    "plateau_min_drop_c": 1.5,
+    "outdoor_bins_c": [-5, 0, 5, 10]
+  },
+  "heating_type": {
+    "fast_max_min_to_1k": 90,
+    "slow_min_min_to_1k": 240,
+    "floor_no_drop_share": 0.5,
+    "min_events": 10
+  }
+}

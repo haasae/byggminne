@@ -1,7 +1,7 @@
 # Real third-party dependencies only, pinned.
-# pandas/numpy/statsmodels et al. return when the data cross-check layer
-# (CLAUDE.md section 4, src/profile/) is actually built -- nothing in src/
-# imports them today.
+# The data cross-check layer (src/profile/) and the heating pipeline
+# (src/heating/) stream with the stdlib; pandas/numpy et al. get added only
+# if they ever measurably need them.
 
 jsonschema==4.26.0
 pytest==9.1.1
@@ -11,3 +11,9 @@ rdflib==7.6.0
 
 # Only needed for the side tools in src/PDF-parser/ (not the decode pipeline).
 pymupdf==1.27.2.3
+
+# Neo4j import (src/heating/neo4j_import.py)
+neo4j==6.2.0
+
+# Only for the r/y/u probe's plots (src/heating/ryu_probe.py), lazily imported.
+matplotlib==3.11.0

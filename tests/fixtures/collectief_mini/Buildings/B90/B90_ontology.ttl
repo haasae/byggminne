@@ -1,0 +1,26 @@
+@prefix bldg: <urn:example#> .
+@prefix rec: <https://w3id.org/rec#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+bldg:B90 a rec:Site ;
+    rdfs:label "B90" .
+
+bldg:B90_TestBuilding a rec:Building ;
+    rdfs:label "TestBuilding" ;
+    rec:isPartOf bldg:B90 .
+
+bldg:B90-MA a rec:SubBuilding ;
+    rdfs:label "MA" ;
+    rec:isPartOf bldg:B90_TestBuilding .
+
+bldg:B90-MA_F1 a rec:Level ;
+    rdfs:label "F1" ;
+    rec:isPartOf bldg:B90-MA .
+
+bldg:B90-MA-A-1-1 a rec:Zone ;
+    rdfs:label "B90-MA-A-1-1" ;
+    rec:isPartOf bldg:B90-MA_F1 .
+
+bldg:B90-MA-A-1-2 a rec:Zone ;
+    rdfs:label "B90-MA-A-1-2" ;
+    rec:isPartOf bldg:B90-MA_F1 .
