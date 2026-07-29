@@ -18,6 +18,7 @@ docs/*.pdf
 # Internal working material for specific calls/reviews, not user documentation.
 docs/showcase_demo_script.md
 docs/expert_validation_sheet.md
+docs/PDF-to-Markdown.md
 
 # NS standards are copyrighted (Standard Norge) — the converted markdown stays
 # local. Supply your own copies; see README.
@@ -28,8 +29,31 @@ knowledge_base/NS-3457_dir/
 data/raw/*
 data/training/*
 
+# COLLECTiEF dataset (65 GB) + Metasys dumps/screenshots — never in git.
+knowledge_base/incoming/
+
+# Derived from the real COLLECTiEF dataset — not needed to build a pipeline
+# (the synthetic tests/fixtures/collectief_mini ships instead), so kept local.
+knowledge_base/collectief_index/
+knowledge_base/collectief_survey.md
+
+# Building-specific operational context stays local (the repo is public):
+# topology surveys, meter serials, BMS screenshots, school indexes, and the
+# org-internal Metasys console tooling.
+docs/images/
+docs/fjernvarmemaalere_skoler.html
+knowledge_base/tasen_building_survey.md
+knowledge_base/skoyen_building_survey.md
+knowledge_base/meter_hierarchies.md
+knowledge_base/school_index/
+src/extract/metasys_crawl.js
+src/extract/metasys_room_probe.js
+
 # Decode runs are regenerable outputs (outputs.jsonl, report, errors)
 runs/
+
+# Local env vars (passwords, keys)
+.env
 
 # Keep empty tracked folders
 !**/.gitkeep
