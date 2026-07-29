@@ -17,6 +17,8 @@ from pathlib import Path
 from neo4j import GraphDatabase
 from neo4j.exceptions import Neo4jError
 
+from src.common.io_utils import configure_stdout_utf8
+
 RETRIES = 5  # constraint creation makes the db briefly unavailable
 
 DEFAULT_CYPHER = Path('runs') / 'heating' / 'neo4j_import.cypher'
@@ -32,7 +34,8 @@ def _load_password():
         # Optional: load from .env without requiring python-dotenv
         env_file = Path('.env')
         if env_file.exists():
-            for line in env_file.read_text(encoding='utf-8').splitlines():
+            # utf-8-sig: PowerShell's Set-Content writes a BOM by default
+            for line in env_file.read_text(encoding='utf-8-sig').splitlines():
                 if line.startswith('NEO4J_PASSWORD='):
                     pw = line.split('=', 1)[1].strip().strip('"').strip("'")
                     break
@@ -111,6 +114,7 @@ def _verify(driver):
 
 
 def main(argv=None):
+    configure_stdout_utf8()
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--cypher', default=str(DEFAULT_CYPHER))
     args = ap.parse_args(argv)
