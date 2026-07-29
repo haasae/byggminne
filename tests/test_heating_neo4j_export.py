@@ -270,6 +270,75 @@ def test_cypher_human_readability(tmp_path):
     assert "p.name = 'Rom 1-07 Varmepådrag'" in cypher
 
 
+def test_cypher_provenance(tmp_path):
+    """Hand-curated facts carry source/confidence onto edges and nodes;
+    rooms inheriting heatingType without room-level evidence get 'assumed'."""
+    index_dir = _make_sk_index(tmp_path)
+    idx = json.loads((index_dir / "SK.json").read_text(encoding="utf-8"))
+    idx["sub_buildings"][0]["heating"] = "radiator"
+    idx["systems"] = [
+        {"id": "SK-320.001", "kind": "heating", "name": "Varmeanlegg",
+         "sub_building_id": "SK-SKOLEBYGG", "serves": ["SK-IDRETTSHALL"],
+         "points": []},
+    ]
+    idx["rooms"] = [
+        {"id": "SK-ROOM-320x-81", "number": "3208", "plan": 1,
+         "sub_building_id": "SK-SKOLEBYGG", "points": []},
+        {"id": "SK-ROOM-H13", "number": "H13", "plan": 1,
+         "sub_building_id": "SK-SKOLEBYGG", "points": []},
+    ]
+    idx["provenance"] = {
+        "SK-ROOM-H13": {
+            "heating": {"value": "gulvvarme", "source": "kurssiden F",
+                        "confidence": "verified"},
+        },
+        "SK-320.001": {
+            "location": {"source": "UI-panel A", "confidence": "verified"},
+            "serves": {"source": "kursnavn B", "confidence": "curated"},
+        },
+        "SK-SKOLEBYGG": {
+            "heating": {"source": "romside C", "confidence": "curated",
+                        "conflict": True},
+        },
+        "SK-ROOM-320x-81": {
+            "number": {"source": "verdimatch D", "confidence": "verified"},
+        },
+        "SK-360001": {
+            "location": {"source": "dekningsomraade E", "confidence": "verified"},
+        },
+    }
+    (index_dir / "SK.json").write_text(
+        json.dumps(idx, ensure_ascii=False), encoding="utf-8")
+    cypher = generate_cypher(index_dir, _make_sk_runs(tmp_path))
+
+    # placement + serves edges carry the provenance as edge properties
+    assert ("MERGE (a)-[r:LOCATED_IN]->(b) "
+            "SET r.source = 'UI-panel A', r.confidence = 'verified';") in cypher
+    assert ("MERGE (a)-[r:SERVES]->(b) "
+            "SET r.source = 'kursnavn B', r.confidence = 'curated';") in cypher
+    # sub-building heating fact -> node properties
+    assert "n.heatingSource = 'romside C'" in cypher
+    assert "n.heatingConfidence = 'curated'" in cypher
+    # a flagged conflict is visible in the description, not only on click
+    assert "n.heatingConflict = true" in cypher
+    assert "NB: kildene er i konflikt om varmetypen" in cypher
+    # resolved room number keeps its evidence
+    assert "r.numberSource = 'verdimatch D'" in cypher
+    assert "r.numberConfidence = 'verified'" in cypher
+    # inherited heating type is honestly stamped 'assumed'
+    assert "r.heatingSource = 'Arvet fra bygget (SK-SKOLEBYGG).'" in cypher
+    assert "r.heatingConfidence = 'assumed'" in cypher
+    # a room-level 'value' overrides the inherited type (mixed buildings)
+    assert ("r.heatingType = 'gulvvarme', r.heatingSource = 'kurssiden F', "
+            "r.heatingConfidence = 'verified'") in cypher
+    # zone placement edge (building fallback branch) carries it too
+    assert ("MERGE (z)-[r:LOCATED_IN]->(b) "
+            "SET r.source = 'dekningsomraade E', "
+            "r.confidence = 'verified';") in cypher
+    # edges without provenance keep the old un-stamped shape
+    assert "MERGE (a)-[:PART_OF]->(b);" in cypher
+
+
 def test_cypher_point_nodes(tmp_path):
     cypher = generate_cypher(_make_index(tmp_path), _make_runs(tmp_path))
     assert "CREATE CONSTRAINT point_id" in cypher

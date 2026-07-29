@@ -10,6 +10,22 @@ Maps the enriched graph to a property graph:
 Zone nodes carry all derived facts as properties so they can be filtered and
 explored directly in Neo4j Browser without traversing extra nodes.
 
+Hand-curated facts may carry provenance in the index JSON under a top-level
+"provenance" key:
+
+    "provenance": {"<entity-id>": {"<fact>": {"source": "...",
+                                              "confidence": "verified"}}}
+
+Facts: 'location' (placement edges), 'serves' (SERVES edges), 'heating'
+(heatingType on SubBuilding/Room; room entries may carry a 'value' that
+overrides the inherited type — resolves mixed buildings per room; a
+'conflict': true on a sub-building surfaces the warning in the node
+description), 'number' (resolved Room numbers).
+Confidence scale: 'verified' (value-checked or explicit BMS text/names),
+'curated' (human reading of UI graphics/layout), 'assumed' (inherited).
+Rooms inheriting heatingType from their sub-building without room-level
+evidence are stamped 'assumed' automatically.
+
 Usage:
     python -m src.heating.neo4j_export
     # -> runs/heating/neo4j_import.cypher
@@ -114,6 +130,18 @@ def _esc(v):
     return str(v).replace("\\", "\\\\").replace("'", "\\'")
 
 
+def _prov_rel(prov, ent_id, fact):
+    """Relationship variable + SET suffix for a provenance-stamped edge.
+
+    Returns ('', '') when the index carries no provenance for this fact, so
+    callers can format unconditionally: f"-[{var}:SERVES]->(b){suffix};".
+    """
+    p = (prov.get(ent_id) or {}).get(fact) or {}
+    sets = [f"r.{k} = '{_esc(p[k])}'"
+            for k in ('source', 'confidence') if p.get(k)]
+    return ('r', ' SET ' + ', '.join(sets)) if sets else ('', '')
+
+
 def _load_runs(runs_dir):
     def by_zone(path):
         out = {}
@@ -154,6 +182,7 @@ def generate_cypher(index_dir, runs_dir):
     # Collect all spatial nodes across all building indexes
     sites, buildings, subbuildings, levels = {}, {}, {}, {}
     sub_heating = {}  # sub_building id -> verified heating type (radiator/...)
+    prov = {}     # entity id -> fact -> {source, confidence} (hand-curated)
     meters = []   # (meter dict, building_node id)
     systems = []  # (system dict, building_node id)
     rooms = []    # (room dict, building_node id)
@@ -164,6 +193,7 @@ def generate_cypher(index_dir, runs_dir):
         bld_id = idx.get('building_node')
         # display_name may hold Norwegian characters (content, not identifier)
         bld_name = idx.get('display_name') or idx.get('building_name') or bld_id
+        prov.update(idx.get('provenance', {}))
 
         if site_id and site_id not in sites:
             sites[site_id] = True
@@ -193,6 +223,17 @@ def generate_cypher(index_dir, runs_dir):
                     sub_heating[sb['id']] = sb['heating']
                     props.append(f"n.heatingType = '{_esc(sb['heating'])}'")
                     desc += f" Vannbåren varme: {sb['heating']}."
+                    hp = (prov.get(sb['id']) or {}).get('heating') or {}
+                    for k, pn in (('source', 'heatingSource'),
+                                  ('confidence', 'heatingConfidence')):
+                        if hp.get(k):
+                            props.append(f"n.{pn} = '{_esc(hp[k])}'")
+                    # known source conflict -> warn in the description
+                    # itself, not only in the click-panel provenance
+                    if hp.get('conflict'):
+                        props.append('n.heatingConflict = true')
+                        desc += (' NB: kildene er i konflikt om varmetypen'
+                                 ' - se heatingSource.')
                 props.append(f"n.description = '{_esc(desc)}'")
                 lines.append(
                     f"MERGE (n:SubBuilding {{id: '{_esc(sb['id'])}'}}) "
@@ -307,30 +348,32 @@ def generate_cypher(index_dir, runs_dir):
                 f"MERGE (s:System {{id: '{_esc(s['id'])}'}}) "
                 f"SET {', '.join(props)};")
             sub_id = s.get('sub_building_id')
+            lv, lset = _prov_rel(prov, s['id'], 'location')
             if s.get('parent') and s['parent'] in sys_ids:
                 lines.append(
                     f"MATCH (a:System {{id:'{_esc(s['id'])}'}}), "
                     f"(b:System {{id:'{_esc(s['parent'])}'}}) "
-                    f"MERGE (a)-[:PART_OF]->(b);")
+                    f"MERGE (a)-[{lv}:PART_OF]->(b){lset};")
             elif sub_id and sub_id in subbuildings:
                 # data-backed placement (e.g. IK001 -> Bygg 5)
                 lines.append(
                     f"MATCH (a:System {{id:'{_esc(s['id'])}'}}), "
                     f"(b:SubBuilding {{id:'{_esc(sub_id)}'}}) "
-                    f"MERGE (a)-[:LOCATED_IN]->(b);")
+                    f"MERGE (a)-[{lv}:LOCATED_IN]->(b){lset};")
             elif s.get('kind') == 'ahu' and bld_id in vent_cats:
                 lines.append(
                     f"MATCH (a:System {{id:'{_esc(s['id'])}'}}), "
                     f"(b:System {{id:'{_esc(vent_cats[bld_id])}'}}) "
-                    f"MERGE (a)-[:PART_OF]->(b);")
+                    f"MERGE (a)-[{lv}:PART_OF]->(b){lset};")
             elif bld_id:
                 lines.append(
                     f"MATCH (a:System {{id:'{_esc(s['id'])}'}}), "
                     f"(b:Building {{id:'{_esc(bld_id)}'}}) "
-                    f"MERGE (a)-[:PART_OF]->(b);")
+                    f"MERGE (a)-[{lv}:PART_OF]->(b){lset};")
             serves = s.get('serves')
             if isinstance(serves, str):
                 serves = [serves]
+            sv_var, sv_set = _prov_rel(prov, s['id'], 'serves')
             for sv in serves or []:
                 if sv in subbuildings:
                     # from the branch label (320001_bygg5) or hand-curated
@@ -338,7 +381,7 @@ def generate_cypher(index_dir, runs_dir):
                     lines.append(
                         f"MATCH (a:System {{id:'{_esc(s['id'])}'}}), "
                         f"(b:SubBuilding {{id:'{_esc(sv)}'}}) "
-                        f"MERGE (a)-[:SERVES]->(b);")
+                        f"MERGE (a)-[{sv_var}:SERVES]->(b){sv_set};")
             for p in s.get('points', []):
                 pid = f"{s['id']}_{p['code']}"
                 lines.append(
@@ -375,10 +418,23 @@ def generate_cypher(index_dir, runs_dir):
                     props.append(f"r.{key} = {str(bool(r[key])).lower()}")
             if r.get('source'):
                 props.append(f"r.source = '{_esc(r['source'])}'")
-            # heating type verified at sub-building level; rooms inherit it
-            if r.get('sub_building_id') in sub_heating:
-                props.append(
-                    f"r.heatingType = '{_esc(sub_heating[r['sub_building_id']])}'")
+            # heating type: room-level provenance beats the sub-building
+            # inheritance (which is honestly stamped 'assumed'); a 'value'
+            # in the room entry resolves mixed buildings per room
+            rp = (prov.get(r['id']) or {}).get('heating') or {}
+            htype = rp.get('value') or sub_heating.get(r.get('sub_building_id'))
+            if htype:
+                props.append(f"r.heatingType = '{_esc(htype)}'")
+                src = rp.get('source') or \
+                    f"Arvet fra bygget ({r['sub_building_id']})."
+                conf = rp.get('confidence') or 'assumed'
+                props.append(f"r.heatingSource = '{_esc(src)}'")
+                props.append(f"r.heatingConfidence = '{_esc(conf)}'")
+            np_ = (prov.get(r['id']) or {}).get('number') or {}
+            for k, pn in (('source', 'numberSource'),
+                          ('confidence', 'numberConfidence')):
+                if np_.get(k):
+                    props.append(f"r.{pn} = '{_esc(np_[k])}'")
             sig_list = ', '.join(
                 SIGNAL_NAMES[k] for k in ('temperature', 'temperature_setpoint',
                                           'setpoint_command', 'heating', 'co2',
@@ -548,25 +604,26 @@ def generate_cypher(index_dir, runs_dir):
     lines += ["", "// ── Zone location relationships ─────────────────────────────────────"]
     for building, zone_id in t_triple_zones:
         loc = zone_loc.get(zone_id)
+        zv, zset = _prov_rel(prov, zone_id, 'location')
         if loc and loc.get('level_id'):
             lev_id = loc['level_id']
             lines.append(
                 f"MATCH (z:Zone {{id:'{_esc(zone_id)}'}}), (l:Level {{id:'{_esc(lev_id)}'}}) "
-                f"MERGE (z)-[:LOCATED_IN]->(l);")
+                f"MERGE (z)-[{zv}:LOCATED_IN]->(l){zset};")
         elif loc and loc.get('sub_building_id'):
             # placement known to sub-building level only (e.g. Skøyen AHU
             # dekningsområde panels), no level yet
             lines.append(
                 f"MATCH (z:Zone {{id:'{_esc(zone_id)}'}}), "
                 f"(sb:SubBuilding {{id:'{_esc(loc['sub_building_id'])}'}}) "
-                f"MERGE (z)-[:LOCATED_IN]->(sb);")
+                f"MERGE (z)-[{zv}:LOCATED_IN]->(sb){zset};")
         elif loc and loc.get('building_node'):
             # No level or sub-building placement known for this zone --
             # attach it to its Building so the graph stays connected.
             bn = loc['building_node']
             lines.append(
                 f"MATCH (z:Zone {{id:'{_esc(zone_id)}'}}), (b:Building {{id:'{_esc(bn)}'}}) "
-                f"MERGE (z)-[:LOCATED_IN]->(b);")
+                f"MERGE (z)-[{zv}:LOCATED_IN]->(b){zset};")
         else:
             lines.append(
                 f"// WARNING: no location index for {zone_id}")
