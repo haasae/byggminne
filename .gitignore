@@ -49,6 +49,20 @@ knowledge_base/school_index/
 src/extract/metasys_crawl.js
 src/extract/metasys_room_probe.js
 
+# Deployment-specific adapters (our schools' BMS grammars + the Metasys API
+# tooling) — the public repo demonstrates the adapter pattern with the
+# source-agnostic core + collectief_adapter + synthetic fixtures instead.
+src/extract/metasys_dump.py
+src/heating/metasys_rooms.py
+src/heating/metasys_join.py
+src/heating/tasen_index.py
+src/heating/skoyen_extract.py
+tests/test_metasys_dump.py
+tests/test_heating_metasys_rooms.py
+tests/test_heating_metasys_join.py
+tests/test_heating_tasen_index.py
+tests/test_heating_skoyen_extract.py
+
 # Decode runs are regenerable outputs (outputs.jsonl, report, errors)
 runs/
 
