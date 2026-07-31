@@ -339,6 +339,48 @@ def test_cypher_provenance(tmp_path):
     assert "MERGE (a)-[:PART_OF]->(b);" in cypher
 
 
+def test_cypher_room_backed_zone_attaches_to_room(tmp_path):
+    """A zone-table row whose id matches an index Room enriches the Room
+    node with data* properties instead of creating a duplicate Zone, and
+    never overwrites the curated heatingType."""
+    index_dir = _make_sk_index(tmp_path)
+    idx = json.loads((index_dir / "SK.json").read_text(encoding="utf-8"))
+    idx["rooms"] = [
+        {"id": "TA-ROOM-2211-77", "number": "2211", "bygg": 2, "floor": 2,
+         "sub_building_id": "SK-SKOLEBYGG",
+         "points": [{"signal": "heating", "label": "raw-u", "file": "f.csv"}]},
+    ]
+    (index_dir / "SK.json").write_text(json.dumps(idx), encoding="utf-8")
+    runs_dir = tmp_path / "runs"
+    runs_dir.mkdir()
+    (runs_dir / "zone_table.jsonl").write_text(
+        '{"building":"TA","zone":"TA-ROOM-2211-77","kind":"t_triple",'
+        '"flags":["gain_stuck"]}\n', encoding="utf-8")
+    (runs_dir / "regimes.jsonl").write_text(
+        '{"building":"TA","zone":"TA-ROOM-2211-77","regime":"binary"}\n',
+        encoding="utf-8")
+    (runs_dir / "heating_types.jsonl").write_text(
+        '{"building":"TA","zone":"TA-ROOM-2211-77","verdict":"ambiguous",'
+        '"confidence":0.3,"reasoning":"no setpoint in export"}\n',
+        encoding="utf-8")
+    for name in ("step_summary.jsonl", "orientation.jsonl"):
+        (runs_dir / name).write_text("", encoding="utf-8")
+    cypher = generate_cypher(index_dir, runs_dir)
+
+    assert "MERGE (z:Zone {id: 'TA-ROOM-2211-77'})" not in cypher
+    assert "MATCH (r:Room {id: 'TA-ROOM-2211-77'}) SET" in cypher
+    assert "r.regime = 'binary'" in cypher
+    assert "r.dataVerdict = 'ambiguous'" in cypher
+    assert "r.dataConfidence = 0.3" in cypher
+    assert "r.qualityFlags = 'gain_stuck'" in cypher
+    assert "r.csvFile = 'Thermal zone/TA-ROOM-2211-77.csv'" in cypher
+    # the data verdict must not land in the curated heatingType property
+    assert "r.heatingType = 'ambiguous'" not in cypher
+    # no duplicate triple Point nodes for a room-backed zone
+    assert "TA-ROOM-2211-77_setpoint" not in cypher
+    assert "TA-ROOM-2211-77_sensor" not in cypher
+
+
 def test_cypher_point_nodes(tmp_path):
     cypher = generate_cypher(_make_index(tmp_path), _make_runs(tmp_path))
     assert "CREATE CONSTRAINT point_id" in cypher

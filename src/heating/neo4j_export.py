@@ -108,7 +108,7 @@ def _system_desc(s):
     kind = s.get('kind', '')
     if kind == 'ahu':
         d = ('Ventilasjonsaggregat – maskinen som leverer og trekker ut '
-             'luft for en del av skolen.')
+             'luft for en del av bygget.')
         if s.get('subsystem'):
             d += f" NS-systemnummer {s['subsystem']}."
         if s.get('controller'):
@@ -128,6 +128,19 @@ def _system_desc(s):
 def _esc(v):
     """Escape a string value for Cypher."""
     return str(v).replace("\\", "\\\\").replace("'", "\\'")
+
+
+def _set_clause(alias, props):
+    """Render a dict as a Cypher SET clause body for the given node alias."""
+    parts = []
+    for k, v in props.items():
+        if isinstance(v, str):
+            parts.append(f"{alias}.{k} = '{_esc(v)}'")
+        elif isinstance(v, bool):
+            parts.append(f"{alias}.{k} = {str(v).lower()}")
+        else:
+            parts.append(f"{alias}.{k} = {v}")
+    return ', '.join(parts)
 
 
 def _prov_rel(prov, ent_id, fact):
@@ -208,7 +221,7 @@ def generate_cypher(index_dir, runs_dir):
             lines.append(
                 f"MERGE (n:Building {{id: '{_esc(bld_id)}'}}) "
                 f"SET n.name = '{_esc(bld_name)}', n.site = '{_esc(site_id or '')}', "
-                f"n.description = 'Skolen {_esc(bld_name)}. Bygg, rom, tekniske "
+                f"n.description = 'Anlegget {_esc(bld_name)}. Bygg, rom, tekniske "
                 f"systemer og energimålere ligger under denne.';")
 
         # Known sub-buildings from a building survey/index, even without any
@@ -218,7 +231,7 @@ def generate_cypher(index_dir, runs_dir):
             if sb['id'] not in subbuildings:
                 subbuildings[sb['id']] = bld_id
                 props = [f"n.name = '{_esc(sb['name'])}'"]
-                desc = 'Enkeltbygg/bygningsdel på skolens tomt.'
+                desc = 'Enkeltbygg/bygningsdel på eiendommen.'
                 if sb.get('heating'):
                     sub_heating[sb['id']] = sb['heating']
                     props.append(f"n.heatingType = '{_esc(sb['heating'])}'")
@@ -257,7 +270,7 @@ def generate_cypher(index_dir, runs_dir):
                 lines.append(
                     f"MERGE (n:SubBuilding {{id: '{_esc(sub_id)}'}}) "
                     f"SET n.name = '{_esc(sub_label)}', "
-                    f"n.description = 'Enkeltbygg/bygningsdel på skolens tomt.';")
+                    f"n.description = 'Enkeltbygg/bygningsdel på eiendommen.';")
 
             if lev_id and lev_id not in levels:
                 levels[lev_id] = sub_id
@@ -329,7 +342,7 @@ def generate_cypher(index_dir, runs_dir):
             lines.append(
                 f"MERGE (s:System {{id: '{_esc(cat_id)}'}}) "
                 f"SET s.kind = 'category', s.name = 'Ventilasjon', "
-                f"s.description = 'Samlenode for skolens "
+                f"s.description = 'Samlenode for anleggets "
                 f"ventilasjonsaggregater.';")
             lines.append(
                 f"MATCH (a:System {{id:'{_esc(cat_id)}'}}), "
@@ -521,6 +534,37 @@ def generate_cypher(index_dir, runs_dir):
         if row.get('kind') == 't_triple'
     )
 
+    # Zone rows whose id matches an index Room (school room-level triples):
+    # attach the derived facts to the existing Room node instead of creating
+    # a duplicate Zone. Data facts use data* property names so curated facts
+    # (heatingType with its provenance) are never overwritten by a verdict.
+    room_ids = {r['id'] for r, _ in rooms}
+    room_backed = [t for t in t_triple_zones if t[1] in room_ids]
+    t_triple_zones = [t for t in t_triple_zones if t[1] not in room_ids]
+
+    for building, zone_id in room_backed:
+        key = (building, zone_id)
+        props = {'csvFile': f'Thermal zone/{zone_id}.csv'}
+        r = data['regimes'].get(key)
+        if r:
+            props['regime'] = r['regime']
+        ht = data['ht'].get(key)
+        if ht:
+            props['dataVerdict'] = ht['verdict']
+            props['dataConfidence'] = ht['confidence']
+            props['dataReasoning'] = ht['reasoning']
+        tau = data['tau'].get(key)
+        if tau and tau.get('minutes_to_1k'):
+            med = tau['minutes_to_1k'].get('median')
+            if med is not None:
+                props['tauMedianMin'] = int(med)
+        flags = data['zone_table'].get(key, {}).get('flags', [])
+        if flags:
+            props['qualityFlags'] = ','.join(flags)
+        lines.append(
+            f"MATCH (r:Room {{id: '{_esc(zone_id)}'}}) "
+            f"SET {_set_clause('r', props)};")
+
     for building, zone_id in t_triple_zones:
         key = (building, zone_id)
         props = {'id': zone_id, 'building': building,
@@ -556,18 +600,9 @@ def generate_cypher(index_dir, runs_dir):
         if flags:
             props['qualityFlags'] = ','.join(flags)
 
-        # Build SET clause
-        set_parts = []
-        for k, v in props.items():
-            if isinstance(v, str):
-                set_parts.append(f"z.{k} = '{_esc(v)}'")
-            elif isinstance(v, bool):
-                set_parts.append(f"z.{k} = {str(v).lower()}")
-            else:
-                set_parts.append(f"z.{k} = {v}")
-
         lines.append(
-            f"MERGE (z:Zone {{id: '{_esc(zone_id)}'}}) SET {', '.join(set_parts)};")
+            f"MERGE (z:Zone {{id: '{_esc(zone_id)}'}}) "
+            f"SET {_set_clause('z', props)};")
 
     # Point nodes: the bound triple (setpoint r / sensor y / actuator u).
     # The graph carries the POINTER to the time series (file + column);
