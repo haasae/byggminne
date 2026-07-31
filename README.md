@@ -132,8 +132,16 @@ label-decoder/
 
 ## Documentation map
 
+**User manuals (Norwegian — start here):**
+- `docs/BRUKERVEILEDNING_GRAF.md` — for operations personnel: how to read
+  and query the knowledge graph in Neo4j (no programming needed).
+- `docs/BRUKERVEILEDNING_PIPELINE.md` — for the technical operator: what to
+  feed the application and how to build a knowledge graph from your own data.
+
 **Using the pipeline (read in this order):**
 - `README.md` — this file: what it is, setup, quick start.
+- `docs/HANDOVER.md` — operating the delivered graphs: regeneration, the
+  add-a-building playbook, the winter verification runbook, local-only bundle.
 - `docs/EVALUATION.md` — how decoding quality is measured; the cold-start rule.
 - `docs/output_explainer.md` — how to read one decoded label (methods, confidence, tier).
 - `schema/README.md` — the output contract, field by field (`examples/` has three worked instances).
@@ -163,4 +171,4 @@ Apache-2.0 — see `LICENSE`.
 
 ## Status
 
-Work in progress as of 29.07.2026.
+Work in progress as of 30.07.2026.
