@@ -6,9 +6,11 @@ file so the decode step can reuse it instead of decoding the same label
 many times over.
 
 Line format (no header): `label,timestamp,value`.
-The label is column 1 and may contain ':', '/', '.', '-', '#' but never commas,
-so we rsplit each line to peel `timestamp` and `value` off the right and keep
-everything before them as the label.
+The two LAST comma-separated fields are peeled off the right (timestamp,
+value); everything before them is the label -- so the label itself may
+contain anything, including commas. The timestamp and value must not
+contain commas: semicolon-separated exports and decimal-comma values would
+silently corrupt the labels, so `warn_suspicious` flags both patterns.
 
 Usage (Tasen is just an example dataset; any CSV in this format works):
 
@@ -27,6 +29,7 @@ Usage (Tasen is just an example dataset; any CSV in this format works):
 
 import argparse # for command line argument parsing
 import glob # utlility to search for files matching a pattern
+import re
 import sys
 from collections import Counter # tool to count unique labels
 from pathlib import Path # handles file paths
@@ -82,6 +85,39 @@ def collect(paths) -> Counter:
     return counter
 
 
+# ISO (2025-01-31) or Norwegian (31.01.2025) date -- a date INSIDE a label is
+# the fingerprint of a shifted split (glued 'label,timestamp')
+_DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}|\d{2}\.\d{2}\.\d{4}")
+
+
+def warn_suspicious(counter):
+    """Return warning strings for the two silent-corruption patterns.
+
+    Both traps produce plausible-looking garbage instead of an error, so the
+    labels themselves are inspected after extraction:
+    - semicolon-separated export: the whole line survives as the "label"
+    - decimal comma in the value: the split shifts and the label ends up as
+      'name,timestamp' glued together
+    """
+    labels = list(counter)
+    n = len(labels)
+    if not n:
+        return []
+    warnings = []
+    if sum(1 for lbl in labels if ";" in lbl) > n / 2:
+        warnings.append(
+            "WARNING: most labels contain ';' -- the file(s) look semicolon-separated "
+            "(Norwegian Excel default). This tool needs comma-separated CSV. "
+            "Please re-export with ',' as the delimiter."
+        )
+    if sum(1 for lbl in labels if "," in lbl and _DATE_RE.search(lbl)) > n / 5:
+        warnings.append(
+            "WARNING: many labels look like 'name,timestamp' glued together -- the "
+            "value column probably uses decimal comma (21,5). Use decimal point (21.5)."
+        )
+    return warnings
+
+
 def _resolve(patterns):
     """
     Takes what the user typed on the command line (file paths or glob patterns) and returns a list of Path objects for the matching files.
@@ -120,6 +156,8 @@ def main() -> int:
 
     paths = _resolve(args.inputs)
     counter = collect(paths)
+    for warning in warn_suspicious(counter):
+        print(warning)
 
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
