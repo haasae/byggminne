@@ -79,6 +79,41 @@ under `runs/`. How to read the metrics honestly: `docs/EVALUATION.md`.
    Quick start). Labels the deterministic layer can't handle land in a
    `residue.jsonl` for the LLM layer — see next section.
 
+### Surveying the building (BMS screenshots)
+
+Decoded labels give structure, but a knowledge graph also needs facts that
+often live only in the BMS user interface: which sub-buildings, floors and
+rooms exist, which heating circuits and ventilation aggregates serve what,
+and whether each room has the heating triple (temperature sensor, setpoint,
+heating actuator). If the BMS offers no export or API, a **screenshot survey
+of the UI is enough** — production graphs have been built that way. Capture,
+in this order:
+
+1. **Orientation** — the front page, the navigation tree fully expanded, and
+   any site/building overview graphic with names on it.
+2. **Heating** — the plant diagram; every circuit box zoomed until its name
+   is readable (circuit names are the main evidence for heating type and for
+   what each circuit serves); each circuit's detail page; pump-stop /
+   outdoor-compensation settings; district-heating and hot-water pages.
+3. **Ventilation** — each aggregate's page; zoom any placement/coverage
+   panel (positions of buttons on overview maps are *not* trustworthy —
+   panel text is).
+4. **Room control** — floor/room overviews, then room detail pages showing
+   the triple and the equipment graphic. One shot per page *style* is
+   enough, but note how many rooms it represents — and take one example of a
+   room with no heating controls, if any exist.
+5. **Energy/meter pages**, if the UI has them.
+
+Rules of thumb: navigate read-only (never touch setpoint fields, hand/auto
+switches, or start/stop buttons); a zoomed, readable label beats pretty
+framing; name files after the fact they prove. Store screenshots under a
+gitignored path (e.g. `knowledge_base/incoming/<bms>/pics/<building>/`) —
+they are building data and must never be committed. While surveying, record
+*how* you know each fact (explicit panel text vs. your reading of a
+graphic) — that distinction becomes the graph's per-fact provenance
+(`verified` / `curated` / `assumed`). From the survey, write a survey
+markdown and a building index; the playbook is `docs/HANDOVER.md` §4.
+
 ### The LLM layer
 
 The deterministic layer (rules + retrieval) is plain Python and needs no LLM.
@@ -88,6 +123,12 @@ inside [Claude Code](https://claude.com/claude-code): one fresh subagent per
 label, no paid API needed. `docs/EVALUATION.md` documents the cold-start rules
 this must honor. An API-based runner (`src/decode/run_batch.py`) exists as a
 blueprint but is not yet implemented.
+
+Claude Code is the tested path, not a hard dependency. Other agentic tools
+(e.g. OpenAI Codex) are oriented by `AGENTS.md` and can follow the same skill
+procedures; plain chat LLMs (ChatGPT, Gemini, …) can decode via the
+copy-paste harness `python -m src.decode.manual_batch` — see
+`docs/BRUKERVEILEDNING_PIPELINE.md` ch. 7.
 
 ### NS standards (bring your own)
 
@@ -133,6 +174,9 @@ label-decoder/
 ## Documentation map
 
 **User manuals (Norwegian — start here):**
+- `docs/OPPLAERING_NYTT_BYGG.md` — the training walkthrough: from nothing to
+  a finished knowledge graph for a new building, written for a non-developer
+  (includes a session plan for whoever does the teaching).
 - `docs/BRUKERVEILEDNING_GRAF.md` — for operations personnel: how to read
   and query the knowledge graph in Neo4j (no programming needed).
 - `docs/BRUKERVEILEDNING_PIPELINE.md` — for the technical operator: what to

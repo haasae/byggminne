@@ -42,10 +42,7 @@ knowledge_base/collectief_survey.md
 # org-internal Metasys console tooling.
 docs/images/
 docs/fjernvarmemaalere_skoler.html
-knowledge_base/tasen_building_survey.md
-knowledge_base/skoyen_building_survey.md
-knowledge_base/bislett_building_survey.md
-knowledge_base/furuseth_building_survey.md
+knowledge_base/*_building_survey.md
 knowledge_base/meter_hierarchies.md
 knowledge_base/school_index/
 src/extract/metasys_crawl.js

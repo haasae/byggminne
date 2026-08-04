@@ -1,0 +1,30 @@
+{"raw_label": "A31-P1-APP007:20099101-OU001/FCB.Local Application.-RT401.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:20099101-OU001/FCB.Local Application.-RT501.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:20099101-OU001/FCB.Local Application.-RD401.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:20099101-OU001/FCB.Local Application.-LR401.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:20099101-OU002/FCB.Local Application.-RT404_WSP.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:20099101-OU002/FCB.360 002-Sch.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/N2 Trunk 1.320001.Analoge innganger.RT401.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/N2 Trunk 1.320001.Analoge innganger.RT501.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/N2 Trunk 1.320001.Analoge utganger.SB42.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/N2 Trunk 1.320001_bygg2.Analoge innganger.RT401.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/ModbusRTU.1204_adr31.Heating control  connector A2.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/ModbusRTU.1204_adr31.Temperature.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/ModbusRTU.1204_adr31.CO2.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/ModbusRTU.12xx_adr35.Heating control  connector A2.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/ModbusRTU.140x_adr52.Set point by Modbus.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/ModbusRTU.140x_adr52.Effective Set point.#12", "source_type": "bacnet"}
+{"raw_label": "+3G100077_563_214_RT601_PV", "source_type": "bacnet"}
+{"raw_label": "+3G100077_563_214_SB601_C", "source_type": "bacnet"}
+{"raw_label": "+3G100077_563_214_KMD_MSV", "source_type": "bacnet"}
+{"raw_label": "Schedule_GS_320_014_RT630_SPN", "source_type": "bacnet"}
+{"raw_label": "Fjernvarme Energi", "source_type": "kiona"}
+{"raw_label": "Fjernvarme Volum", "source_type": "kiona"}
+{"raw_label": "Granlia sykehjem - 310.001 Varmt tappevann - Volum (m3)", "source_type": "kiona"}
+{"raw_label": "Granlia sykehjem - 432.003 - Energi (kWh)", "source_type": "kiona"}
+{"raw_label": "7020099101000021", "source_type": "other"}
+{"raw_label": "A31-P1-APP007:20099101-OU001/FCB.Local Application.-XZ401.#12", "source_type": "bacnet"}
+{"raw_label": "A31-P1-APP007:20099101-OU002/FCB.Local Application.-IK001_TEST.Komp_Drift.#12", "source_type": "bacnet"}
+{"raw_label": "Granlia sykehjem - 313.01 Varmt tappevann - Temperatur tur", "source_type": "kiona"}
+{"raw_label": "A31-P1-APP007:NIE00307F2B44CC/BACnet IP1.Utganger.563_B214-SB602.#12", "source_type": "bacnet"}
+{"raw_label": "Ukjent maaler 55882 Granlia paviljong", "source_type": "other"}

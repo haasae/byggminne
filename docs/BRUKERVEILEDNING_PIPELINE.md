@@ -30,8 +30,10 @@ lærer, lagres i `knowledge_base/`. Fordi målet er at applikasjonen skal kunne 
 
 ## 2. Hva du må gi den
 
-1. **CSV-filer med etiketter** i `data/raw/`. Etiketten må stå i første
-   kolonne. Tidsserieverdier trengs *ikke* for dekoding, men det trengs for
+1. **Punktnavnene** i `data/raw/` — enten som CSV på formatet i boksen
+   under, eller rett og slett som en tekstfil med ett punktnavn per linje
+   (en slik liste kan mates rett til `build_batch` i kapittel 3).
+   Tidsserieverdier trengs *ikke* for dekoding, men det trengs for
    datakryssjekker og romvarme-analysen (paragraf 4).
 2. **Kildetype** per datasett: `kiona`, `bacnet` eller `other` — den styrer
    hvilken grammatikk dekoderen prøver.
@@ -42,6 +44,24 @@ lærer, lagres i `knowledge_base/`. Fordi målet er at applikasjonen skal kunne 
 4. **NS-standardene** (NS 3451, NS 3457-8) er opphavsrettsbeskyttet og
    følger ikke med. Dersom du har du dem, legg dem på plassene beskrevet i
    `README.md`. Alt virker uten dem, men dekodingen kan ikke sitere dem.
+
+> **Krav til CSV-formatet** (for `unique_labels` i kapittel 3): langformat
+> uten overskriftsrad, én måling per linje — `punktnavn,tidsstempel,verdi`.
+> Verktøyet plukker av de to *siste* komma-feltene (tidsstempel og verdi) og
+> beholder resten som punktnavn, så navnet kan inneholde hva som helst, også
+> komma. Tidsstempel-formatet er likegyldig (det leses aldri). En eventuell
+> overskriftsrad hoppes ikke over — den blir en ufarlig ekstra "etikett" du
+> kan slette fra listen. To feller fra norske Excel-eksporter (verktøyet
+> varsler om begge):
+>
+> - **Semikolon-CSV:** norsk Excel eksporterer ofte med `;` — da blir hele
+>   linjen stående som "punktnavn". Filen må være ekte komma-separert.
+> - **Desimalkomma i verdien** (`21,5`): forskyver kolonnene, så punktnavnet
+>   stille blir feil. Bruk desimalpunktum (`21.5`).
+>
+> **Nødutgangen finnes alltid:** passer ikke formatet, lag en ren tekstfil
+> med ett punktnavn per linje (be gjerne LLM-en om konverteringen) og hopp
+> rett til `build_batch`-steget.
 
 > **Windows/norske tegn:** kjør alltid med `PYTHONIOENCODING=utf-8`, og les
 > alle filer som UTF-8. æ/ø/å i filINNHOLD er greit; filNAVN holdes ASCII.
@@ -73,7 +93,8 @@ først. Sier noe om hvor bra det gikk?).
 Åpne prosjektet i Claude Code og kjør
 `/decode`-ferdigheten på batchen. Den dekoder hver rest-etikett i en ny
 agent (Dette sørger for at det ikke er noen "smitte" mellom etiketter) og legger resultatene til
-`outputs.jsonl`. Tynne-men-gyldige dekoder kan berikes tilsvarende:
+`outputs.jsonl`. *(Har du ikke Claude Code? Se kapittel 7 — alle
+LLM-verktøy kan brukes.)* Tynne-men-gyldige dekoder kan berikes tilsvarende:
 
 ```bash
 python -m src.decode.enrichment --outputs runs/MIN_BATCH/outputs.jsonl \
@@ -166,4 +187,61 @@ generaliserer — regelen og begrunnelsen står i `docs/EVALUATION.md`.
 | `neo4j_import` får «connection refused» | Start Neo4j Desktop først |
 | Dekoderen setter `null` der du vet svaret | Riktig oppførsel: aldri gjette. Legg kunnskapen i `knowledge_base/`, kjør på nytt |
 | Alt annet | `python -m pytest -q` skal være grønn. Er den ikke det, er noe galt lokalt |
+
+## 7. Uten Claude Code: ChatGPT, Codex og andre LLM-verktøy
+
+Applikasjonen er laget LLM-uavhengig: all kunnskap ligger i filer i
+`knowledge_base/`, og LLM-en brukes bare som en "prompt inn → JSON
+ut"-funksjon uten hukommelse. Claude Code er den *testede og anbefalte*
+veien, men den er ikke et krav. To alternative ruter, etter hva slags
+verktøy du har:
+
+### A. Agent-verktøy som jobber i prosjektmappen (f.eks. OpenAI Codex)
+
+Verktøy som kan lese filer, skrive filer og kjøre kommandoer i
+prosjektmappen brukes i praksis likt som Claude Code — også til
+kartleggingsnotat og bygg-indeks. Filen `AGENTS.md` i rotmappen orienterer
+slike verktøy (den peker til `CLAUDE.md` og prosedyrene). For dekoding: be
+verktøyet følge `.claude/skills/decode/SKILL.md` bokstavelig. Ett krav er
+absolutt: **hver etikett skal dekodes i en fersk, isolert modell-kontekst**
+— aldri alle i én samtale (kaldstart-regelen, `docs/EVALUATION.md`). Kan
+ikke verktøyet garantere det, bruk rute B.
+
+> **GitHub Copilot (VS Code) og lignende:** kan ikke starte isolerte
+> del-agenter selv, og prompt-filene er for store til å limes inn i et
+> chat-felt. Kombiner rutene: kjør `export`-steget i rute B, og be verktøyet
+> — i en NY chat per etikett — lese `prompts/NNN.txt` og skrive KUN
+> JSON-svaret til `replies/NNN.txt`. Deretter `collect` som vanlig.
+
+### B. Chat-nettsider (ChatGPT, Gemini, claude.ai i nettleseren)
+
+Kopier-og-lim-ruten. Programmet lager ferdige prompt-filer, du limer dem
+inn, og programmet kontrollerer svarene:
+
+```bash
+# 1. Lag én ferdig prompt-fil per rest-etikett:
+python -m src.decode.manual_batch export \
+    --input runs/MIN_BATCH/residue.jsonl --out-dir runs/MIN_BATCH_manual
+
+# 2. For hver fil i prompts/: lim ALT inn i en HELT NY chat (én etikett per
+#    chat — aldri gjenbruk en chat!), og lagre svaret som replies/<samme
+#    nummer>.txt. Kodegjerder og småprat rundt JSON-en er ufarlig.
+
+# 3. Kontroller svarene og sett sammen resultatet:
+python -m src.decode.manual_batch collect --dir runs/MIN_BATCH_manual \
+    --deterministic runs/MIN_BATCH/outputs.jsonl \
+    --out runs/MIN_BATCH/outputs_full.jsonl
+```
+
+`collect` godtar bare svar som består skjemakontrollen og ekko-sjekken av
+etiketten; avviste svar får en ferdig korrigert prompt i `retry/`-mappen
+(ny chat, overskriv svarfilen, kjør `collect` igjen). Berikelse (kapittel 3)
+går samme rute: bruk `enrichment_residue.jsonl` som input, og flett
+`outputs_llm.jsonl` med `merge_outputs` som beskrevet der.
+
+**Ærlig merknad:** bare Claude er kvalitetstestet som dekoder-LLM.
+Øvingsbatchen `b_synth_s01` med fasit
+(`data/synthetic/S01_granlia_answer_key.md`) er laget nettopp for å prøve en
+annen LLM: dekod den og se om modellen går i fellene (nr. 23 og 26) før du
+stoler på den på et ekte bygg.
 
