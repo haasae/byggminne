@@ -201,7 +201,7 @@ def generate_cypher(index_dir, runs_dir):
     rooms = []    # (room dict, building_node id)
 
     for idx_path in sorted(index_dir.glob('*.json')):
-        idx = json.loads(idx_path.read_text(encoding='utf-8'))
+        idx = json.loads(idx_path.read_text(encoding='utf-8-sig'))
         site_id = idx.get('building')
         bld_id = idx.get('building_node')
         # display_name may hold Norwegian characters (content, not identifier)
@@ -525,7 +525,7 @@ def generate_cypher(index_dir, runs_dir):
     # Load all indexes into a zone->loc dict
     zone_loc = {}
     for idx_path in sorted(index_dir.glob('*.json')):
-        idx = json.loads(idx_path.read_text(encoding='utf-8'))
+        idx = json.loads(idx_path.read_text(encoding='utf-8-sig'))
         for zone_id, loc in idx.get('zones', {}).items():
             zone_loc[zone_id] = loc
 
