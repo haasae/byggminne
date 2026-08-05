@@ -3,7 +3,7 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "label-decoder"
+name = "byggminne"
 version = "0.1.0"
 description = "Decode unstructured building-energy measurement labels into structured, schema-validated JSON."
 requires-python = ">=3.10"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://label-decoder/schema/decoded_label.schema.json",
+  "$id": "https://byggminne/schema/decoded_label.schema.json",
   "title": "DecodedLabel",
   "description": "Structured form of one decoded building-measurement label. Partial decoding is valid: unknown semantic fields are null, but raw_label, source_type, confidence, and validated are always required.",
   "type": "object",

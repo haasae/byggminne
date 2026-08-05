@@ -1,4 +1,4 @@
-# label-decoder — Evaluation & Testing Protocol
+# byggminne — Evaluation & Testing Protocol
 
 *Companion to CLAUDE.md. CLAUDE.md owns the architecture and decode rules; this doc
 owns **how we measure decoding quality**. It was the deliverable of the evaluation

@@ -42,7 +42,7 @@ from src.common.io_utils import configure_stdout_utf8, read_jsonl
 from src.common.label_tokens import group_keys, point_token_of, system_token_of
 
 BRICK_NS = Namespace(BRICK)
-DEFAULT_BASE = "https://example.org/label-decoder/"
+DEFAULT_BASE = "https://example.org/byggminne/"
 
 
 def equipment_keys(raw_label):

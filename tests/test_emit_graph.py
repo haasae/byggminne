@@ -60,7 +60,7 @@ def test_one_graph_per_building_plus_site_file(tmp_path):
 def test_points_typed_and_anchored_to_equipment(tmp_path):
     graphs, _ = _emit(tmp_path)
     g = graphs["tasen_20053404"]
-    ex = Namespace("https://example.org/label-decoder/tasen#")
+    ex = Namespace("https://example.org/byggminne/tasen#")
 
     pumps = list(g.subjects(RDF.type, BRICK_NS.Pump))
     assert len(pumps) == 1                          # one equipment node, 2 points
@@ -83,7 +83,7 @@ def test_raw_label_survives_verbatim_utf8(tmp_path):
 def test_system_membership_needs_structural_token(tmp_path):
     graphs, _ = _emit(tmp_path)
     g = graphs["tasen_bygg3"]
-    ex = Namespace("https://example.org/label-decoder/tasen#")
+    ex = Namespace("https://example.org/byggminne/tasen#")
     system = ex["system_320001"]
     assert (system, RDF.type, BRICK_NS.Hot_Water_System) in g
     points = list(g.objects(system, BRICK_NS.hasPoint))
@@ -96,7 +96,7 @@ def test_system_membership_needs_structural_token(tmp_path):
 def test_unplaced_untyped_row_lands_in_site_file_as_plain_point(tmp_path):
     graphs, _ = _emit(tmp_path)
     g = graphs["tasen_site"]
-    ex = Namespace("https://example.org/label-decoder/tasen#")
+    ex = Namespace("https://example.org/byggminne/tasen#")
     site = ex["site_tasen"]
     assert (site, RDF.type, BRICK_NS.Site) in g
     points = list(g.subjects(BRICK_NS.isPointOf, site))

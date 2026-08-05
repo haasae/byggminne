@@ -8,7 +8,7 @@ to move into the `decode` skill once built; load it only when decoding.
 
 ## 1. What this project is
 
-**label-decoder** turns unstructured building-energy measurement labels into a
+**byggminne** turns unstructured building-energy measurement labels into a
 structured, machine-readable format. A "label" is a column header or point name
 from a building's data system — an unstructured (mostly Norwegian) string
 encoding building, system, subsystem, component, and measurement type.
@@ -189,7 +189,7 @@ stdlib today).
 ## 8. Repository layout & where to find things
 
 ```
-label-decoder/
+byggminne/
 ├── CLAUDE.md                      # this file (the map)
 ├── README.md
 ├── requirements.txt

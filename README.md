@@ -1,4 +1,4 @@
-# label-decoder
+# byggminne
 
 ## Short intro of the application
 
@@ -145,7 +145,7 @@ included under `knowledge_base/`.
 ## Layout
 
 ```
-label-decoder/
+byggminne/
 ├── CLAUDE.md                      # full architecture, domain rules, decode grammar
 ├── schema/                        # decoded_label.schema.json — the output contract
 ├── examples/                      # three worked schema instances

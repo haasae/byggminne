@@ -15,7 +15,7 @@ change the schema, update this file too.
 
 ## 1. What it is and why it exists
 
-`label-decoder` turns unstructured, mostly-Norwegian measurement labels (column
+`byggminne` turns unstructured, mostly-Norwegian measurement labels (column
 headers / point names from building data systems) into structured JSON. **Every
 decoded label becomes exactly one instance of this schema, validated before it is
 stored or used.**
