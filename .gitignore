@@ -33,7 +33,10 @@ data/raw/*
 data/training/*
 
 # COLLECTiEF dataset (65 GB) + Metasys dumps/screenshots — never in git.
-knowledge_base/incoming/
+# The folder ships with a README.md only (the where-do-screenshots-go guide);
+# all actual building data stays local.
+knowledge_base/incoming/*
+!knowledge_base/incoming/README.md
 
 # Derived from the real COLLECTiEF dataset — not needed to build a pipeline
 # (the synthetic tests/fixtures/collectief_mini ships instead), so kept local.
