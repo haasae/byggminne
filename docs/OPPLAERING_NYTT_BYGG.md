@@ -121,7 +121,7 @@ Du trenger ikke å være utvikler, for du har en med deg som er det. Claude
 Code er et program der Claude kan lese filene i prosjektmappen, kjøre
 kommandoer for deg og forklare det som skjer. Slik bruker du den:
 
-1. Åpne prosjektmappen (`label-decoder`) i Filutforsker, høyreklikk på et
+1. Åpne prosjektmappen (`byggminne`) i Filutforsker, høyreklikk på et
    tomt område i mappen og velg **"Åpne i terminal"**. (Slik åpner du
    PowerShell "i prosjektmappen" — det trikset brukes gjennom hele
    veiledningen.)
@@ -148,9 +148,9 @@ Gjøres én gang. Punkt for punkt:
 
 1. **Installer Python 3** fra <https://www.python.org/downloads/>. Viktig:
    kryss av **"Add python.exe to PATH"** i installasjonsveiviseren.
-2. **Få prosjektet.** Du får `label-decoder`-mappen av forrige forvalter,
+2. **Få prosjektet.** Du får `byggminne`-mappen av forrige forvalter,
    enklest som en zip-fil: høyreklikk → **Pakk ut alle**, og legg mappen et
-   fast sted, f.eks. `C:\Users\<dittnavn>\label-decoder` (helst en mappe som
+   fast sted, f.eks. `C:\Users\<dittnavn>\byggminne` (helst en mappe som
    *ikke* synkroniseres av OneDrive — prosjektet lager tusenvis av småfiler).
    I tillegg trenger du **den lokale bunten**: de byggspesifikke filene som
    med vilje ikke ligger i den offentlige koden. Hva bunten inneholder og
