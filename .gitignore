@@ -21,9 +21,12 @@ docs/expert_validation_sheet.md
 docs/PDF-to-Markdown.md
 
 # NS standards are copyrighted (Standard Norge) — the converted markdown stays
-# local. Supply your own copies; see README.
-knowledge_base/NS-3451_dir_local/
-knowledge_base/NS-3457_dir_local/
+# local. Supply your own copies; see README. The folders ship with a README.md
+# only, so a fresh clone shows where the files go; their contents stay local.
+knowledge_base/NS-3451_dir/*
+knowledge_base/NS-3457_dir/*
+!knowledge_base/NS-3451_dir/README.md
+!knowledge_base/NS-3457_dir/README.md
 
 # Raw building data can be large, so we track the folder, not the dumps.
 data/raw/*
