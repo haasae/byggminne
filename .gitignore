@@ -50,7 +50,7 @@ docs/images/
 docs/fjernvarmemaalere_skoler.html
 knowledge_base/*_building_survey.md
 knowledge_base/meter_hierarchies.md
-knowledge_base/school_index/
+knowledge_base/index/
 src/extract/metasys_crawl.js
 src/extract/metasys_room_probe.js
 
