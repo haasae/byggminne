@@ -671,6 +671,51 @@ def generate_cypher(index_dir, runs_dir):
     return '\n'.join(lines) + '\n'
 
 
+def index_warnings(index_dir):
+    """Dangling id references in the index JSONs — edges that will be
+    silently dropped or misplaced at export time.
+
+    The emitters guard every relationship with `... in subbuildings`-style
+    checks, so a typo'd sub_building_id/serves/parent never errors: the edge
+    just doesn't appear ("imported fine but 0 rels"). This surfaces them.
+    Id sets are collected across ALL index files (cross-file references are
+    legal). Returns a list of human-readable warning strings.
+    """
+    indexes = [(p.name, json.loads(p.read_text(encoding='utf-8-sig')))
+               for p in sorted(index_dir.glob('*.json'))]
+    subs, sys_ids, meter_ids = set(), set(), set()
+    for _, idx in indexes:
+        subs |= {sb.get('id') for sb in idx.get('sub_buildings', [])}
+        sys_ids |= {s.get('id') for s in idx.get('systems', [])}
+        meter_ids |= {m.get('id') for m in idx.get('meters', [])}
+
+    warns = []
+    for name, idx in indexes:
+        for s in idx.get('systems', []):
+            sub = s.get('sub_building_id')
+            if sub and sub not in subs:
+                warns.append(f"{name}: system '{s.get('id')}': sub_building_id "
+                             f"'{sub}' finnes ikke i sub_buildings")
+            if s.get('parent') and s['parent'] not in sys_ids:
+                warns.append(f"{name}: system '{s.get('id')}': parent "
+                             f"'{s['parent']}' finnes ikke i systems")
+            serves = s.get('serves')
+            for sv in [serves] if isinstance(serves, str) else serves or []:
+                if sv not in subs:
+                    warns.append(f"{name}: system '{s.get('id')}': serves "
+                                 f"'{sv}' finnes ikke i sub_buildings")
+        for r in idx.get('rooms', []):
+            sub = r.get('sub_building_id')
+            if sub and sub not in subs:
+                warns.append(f"{name}: rom '{r.get('id')}': sub_building_id "
+                             f"'{sub}' finnes ikke i sub_buildings")
+        for m in idx.get('meters', []):
+            if m.get('parent') and m['parent'] not in meter_ids:
+                warns.append(f"{name}: måler '{m.get('id')}': parent "
+                             f"'{m['parent']}' finnes ikke i meters")
+    return warns
+
+
 def main(argv=None):
     configure_stdout_utf8()
     ap = argparse.ArgumentParser(description=__doc__)
@@ -686,6 +731,13 @@ def main(argv=None):
     out.write_text(cypher, encoding='utf-8')
     line_count = cypher.count('\n')
     print(f'{line_count} lines -> {out}')
+    warns = index_warnings(Path(args.index_dir))
+    if warns:
+        print('ADVARSEL: id-referanser i indeksfilene peker paa noe som '
+              'ikke finnes — disse koblingene faller stille bort i grafen. '
+              'Rett id-ene og eksporter paa nytt:', file=sys.stderr)
+        for w in warns:
+            print(f'  - {w}', file=sys.stderr)
     return 0
 
 
