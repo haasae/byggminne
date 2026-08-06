@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-from src.heating.neo4j_export import generate_cypher
+from src.heating.neo4j_export import generate_cypher, index_warnings
 
 FIXTURE = Path(__file__).parent / "fixtures" / "collectief_mini"
 
@@ -77,6 +77,25 @@ def test_cypher_location_relationship(tmp_path):
     assert "MERGE (z)-[:LOCATED_IN]->(l)" in cypher
     assert "B90-MA-A-1-1" in cypher
     assert "B90-MA_F1" in cypher
+
+
+def test_dangling_reference_detected(tmp_path):
+    index_dir = _make_index(tmp_path)
+    idx = json.loads((index_dir / "B90.json").read_text(encoding="utf-8"))
+    idx["sub_buildings"] = [{"id": "B90-MA", "name": "MA"}]
+    idx["systems"] = [{"id": "B90_360.001", "kind": "ahu", "name": "Aggregat",
+                       "sub_building_id": "B90-NOPE", "serves": "B90-GONE"}]
+    idx["rooms"] = [{"id": "B90_101", "number": "101",
+                     "sub_building_id": "B90-MISSING"}]
+    (index_dir / "B90.json").write_text(json.dumps(idx), encoding="utf-8")
+    warns = "\n".join(index_warnings(index_dir))
+    assert "B90-NOPE" in warns
+    assert "B90-GONE" in warns
+    assert "B90-MISSING" in warns
+
+
+def test_clean_index_has_no_warnings(tmp_path):
+    assert index_warnings(_make_index(tmp_path)) == []
 
 
 def _make_sk_index(tmp_path):

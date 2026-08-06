@@ -27,7 +27,7 @@ with a human doing the pasting.
 - ASCII-only file/directory/identifier names; æ/ø/å only inside UTF-8 file
   *content*. Read and write everything as UTF-8 (labels are Norwegian).
 - Never commit building data: `data/raw/`, `data/training/`,
-  `knowledge_base/incoming/`, building surveys and `knowledge_base/school_index/`
+  `knowledge_base/incoming/`, building surveys and `knowledge_base/index/`
   are local-only (see `.gitignore`).
 - Never invent a meaning for an unknown code — leave the field `null` with low
   confidence. Partial decoding is valid output.

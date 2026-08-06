@@ -41,7 +41,7 @@ regenerated.
 
 | What | Paths | Why local |
 |---|---|---|
-| School indexes (the graph source of truth) | `knowledge_base/school_index/` (every `*.json` — `TA.json`, `SK.json`, `BI.json`, … — plus `OPEN_ITEMS.md`) | building-specific |
+| Building indexes (the graph source of truth) | `knowledge_base/index/` (every `*.json` — `TA.json`, `SK.json`, `BI.json`, … — plus `OPEN_ITEMS.md`) | building-specific |
 | Building surveys + provenance narratives | `knowledge_base/tasen_building_survey.md`, `knowledge_base/skoyen_building_survey.md`, `knowledge_base/meter_hierarchies.md`, `docs/images/`, `docs/fjernvarmemaalere_skoler.html` | building-specific |
 | Deployment adapters + their tests | `src/extract/metasys_dump.py`, `src/extract/metasys_crawl.js`, `src/extract/metasys_room_probe.js`, `src/heating/{metasys_rooms,metasys_join,tasen_index,skoyen_extract}.py`, `tests/test_metasys_*.py`, `tests/test_heating_{metasys_rooms,metasys_join,tasen_index,skoyen_extract}.py` | our schools' BMS specifics |
 | Metasys crawl data | `knowledge_base/incoming/metasys/` | building-specific |
@@ -66,12 +66,12 @@ python -m src.heating.metasys_rooms        # parse the Metasys crawl
 python -m src.heating.metasys_join         # join room data into SK.json/TA.json
 
 # Export + import:
-python -m src.heating.neo4j_export --index-dir knowledge_base/school_index \
-    --runs-dir runs/schools -o runs/heating/school_index.cypher
-python -m src.heating.neo4j_import --cypher runs/heating/school_index.cypher
+python -m src.heating.neo4j_export --index-dir knowledge_base/index \
+    --runs-dir runs/timeseries -o runs/heating/index.cypher
+python -m src.heating.neo4j_import --cypher runs/heating/index.cypher
 ```
 
-`runs/schools/` holds the converted per-zone trend CSVs plus the data-derived
+`runs/timeseries/` holds the converted per-zone trend CSVs plus the data-derived
 facts (regimes, step summaries, heating-type verdicts) for both schools; it is
 fully regenerable via the extractors + pipeline in section 5. The export picks
 those facts up automatically: they land on Zone nodes (system zones) and, for
@@ -96,7 +96,7 @@ data joins later:
    setpoint, heating actuator/gain. Write a survey markdown (pattern:
    `tasen_building_survey.md`) with screenshots. Record *how you know* each
    fact — that becomes provenance.
-3. **Create `knowledge_base/school_index/<CODE>.json`** following `TA.json` /
+3. **Create `knowledge_base/index/<CODE>.json`** following `TA.json` /
    `SK.json`: hand-curated keys (`building`, `display_name`, `comment`,
    `provenance`, `sub_buildings`, `system_locations`, `system_serves`,
    `room_numbers`, `controller_subsystems`) plus generated keys (`systems`,
@@ -134,17 +134,17 @@ on the project then — this section is the recipe.
    2025 data:
 
    ```bash
-   python -m src.heating.skoyen_extract     # SK long-format export -> runs/schools
-   python -m src.heating.tasen_extract      # TA OS001 export -> runs/schools (index-driven)
-   python -m src.heating.build_zone_table --root runs/schools --buildings SK,TA \
-       -o runs/schools/zone_table.jsonl --cache runs/schools/scan_cache.jsonl
-   python -m src.heating.gain_regime runs/schools/zone_table.jsonl \
-       -o runs/schools/regimes.jsonl
-   python -m src.heating.step_response --root runs/schools --buildings SK,TA \
-       --events-dir runs/schools/events --summary runs/schools/step_summary.jsonl \
-       --report runs/schools/step_response_report.md --force
-   python -m src.heating.heating_type runs/schools/regimes.jsonl \
-       runs/schools/step_summary.jsonl -o runs/schools/heating_types.jsonl
+   python -m src.heating.skoyen_extract     # SK long-format export -> runs/timeseries
+   python -m src.heating.tasen_extract      # TA OS001 export -> runs/timeseries (index-driven)
+   python -m src.heating.build_zone_table --root runs/timeseries --buildings SK,TA \
+       -o runs/timeseries/zone_table.jsonl --cache runs/timeseries/scan_cache.jsonl
+   python -m src.heating.gain_regime runs/timeseries/zone_table.jsonl \
+       -o runs/timeseries/regimes.jsonl
+   python -m src.heating.step_response --root runs/timeseries --buildings SK,TA \
+       --events-dir runs/timeseries/events --summary runs/timeseries/step_summary.jsonl \
+       --report runs/timeseries/step_response_report.md --force
+   python -m src.heating.heating_type runs/timeseries/regimes.jsonl \
+       runs/timeseries/step_summary.jsonl -o runs/timeseries/heating_types.jsonl
    ```
 
    For a new export file, pass `--input` to the extractor (see each module's
@@ -166,7 +166,7 @@ on the project then — this section is the recipe.
 The concrete ledger — including which rooms are still `assumed`, the
 Bygg 3/5 circuit-naming conflict, and the pending FDV documentation
 request — is building-specific and therefore lives in the local bundle:
-`knowledge_base/school_index/OPEN_ITEMS.md`.
+`knowledge_base/index/OPEN_ITEMS.md`.
 
 ## 7. Quick prerequisites recap
 

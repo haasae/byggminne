@@ -230,7 +230,7 @@ byggminne/
 - `knowledge_base/skoyen_building_survey.md` (**local only** — building-specific, gitignored) — Skøyen skole spatial structure, meters, and Kiona findings (sub-buildings, floors, meter IDs, zone placement).
 - `knowledge_base/tasen_building_survey.md` (**local only** — building-specific, gitignored) — Tåsen BMS survey: OU→360.xxx controller mapping, the OS001 room grammar (bygg+etasje digits), the data-confirmed per-room heating actuators, heating types.
 - `knowledge_base/meter_hierarchies.md` (**local only** — building-specific, gitignored) — district heating meter trees for Tåsen and Skøyen (from `docs/fjernvarmemaalere_skoler.html`, also local only).
-- `knowledge_base/school_index/` (**local only** — building-specific, gitignored) — Neo4j spatial/meter/system index for our own schools. SK.json hand-curated except the generated `rooms` key; TA.json systems/rooms regenerate with `python -m src.heating.tasen_index`. Metasys room data (SK rooms + TA point ids/trend flags) joins in AFTER via `python -m src.heating.metasys_rooms && python -m src.heating.metasys_join`.
+- `knowledge_base/index/` (**local only** — building-specific, gitignored) — Neo4j spatial/meter/system index for our own schools. SK.json hand-curated except the generated `rooms` key; TA.json systems/rooms regenerate with `python -m src.heating.tasen_index`. Metasys room data (SK rooms + TA point ids/trend flags) joins in AFTER via `python -m src.heating.metasys_rooms && python -m src.heating.metasys_join`.
 
 ## 10. Future goals
 

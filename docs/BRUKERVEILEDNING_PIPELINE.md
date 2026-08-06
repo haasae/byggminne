@@ -167,7 +167,7 @@ passordet ligger i miljøvariabelen `NEO4J_PASSWORD` eller i en `.env`-fil.
 Indeksmappa inneholder én JSON per bygg med den håndkuraterte
 strukturen (bygg, etasjer, rom, systemer, proveniens). Formatet er
 dokumentert i docstringen til `src/heating/neo4j_export.py`, og
-`knowledge_base/school_index/` (lokal) er malen.
+`knowledge_base/index/` (lokal) er malen.
 
 ## 5. Vedlikehold og læring
 
