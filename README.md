@@ -106,7 +106,13 @@ in this order:
 
 Rules of thumb: navigate read-only (never touch setpoint fields, hand/auto
 switches, or start/stop buttons); a zoomed, readable label beats pretty
-framing; name files after the fact they prove. Store screenshots under a
+framing; name files after the fact they prove. Collect each building's alias
+names across systems (BMS, aerial photo, energy portal often disagree), and
+treat buildings visible on overview images but absent from the BMS as
+findings: record them as outside BMS scope — never merge them into a known
+wing without evidence. Questions neither you nor the operator can settle go
+into an "open items" section of the survey note, to be put to the building's
+operations staff later — they usually know. Store screenshots under a
 gitignored path (e.g. `knowledge_base/incoming/<bms>/pics/<building>/`) —
 they are building data and must never be committed. While surveying, record
 *how* you know each fact (explicit panel text vs. your reading of a

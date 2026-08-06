@@ -174,7 +174,11 @@ Gjøres én gang. Punkt for punkt:
 4. **Installer Neo4j Desktop** fra <https://neo4j.com/download/> (gratis).
    Lag et prosjekt → **Add → Local DBMS** → velg et passord → **Start**.
    Velg et passord med bare vanlige tegn (a–z, tall — ikke æ/ø/å eller
-   anførselstegn). Standardinnstillingene ellers er riktige (adresse
+   anførselstegn). Viktig: sjekk i innstillingene at Neo4j Desktops
+   datamappe ligger **utenfor OneDrive** (merk at «Dokumenter» og
+   «Skrivebord» ofte ER OneDrive-mapper på Windows 11 — en mappe rett under
+   `C:\`, f.eks. `C:\neo4j-data`, er trygg). Synkroniseringen låser
+   databasefilene, og da stopper instansen i samme øyeblikk som den starter. Standardinnstillingene ellers er riktige (adresse
    `bolt://127.0.0.1:7687`, bruker `neo4j`, database `neo4j`).
 5. **Lagre Neo4j-passordet for skriptene.** Lag en fil som heter `.env`
    (bare det, ingen `.txt` på slutten) i prosjektmappen. Enklest fra
@@ -290,7 +294,9 @@ Ta skjermbilder i denne rekkefølgen (fullstendig liste med begrunnelser:
 `README.md`, avsnittet "Surveying the building"):
 
 1. **Orientering** — forsiden, navigasjonstreet helt utfoldet, oversiktsbilder
-   med navn på.
+   med navn på. Noter alias-navn (samme bygg kan hete ulikt i flyfoto, SD og
+   energisystem), og bygg som synes på oversikten men mangler i SD-anlegget:
+   de noteres som *utenfor SD-omfanget* — aldri gjettet inn i en kjent fløy.
 2. **Varme** — anleggsbildet; hver kurs zoomet til navnet er lesbart
    (kursnavnene er hovedbeviset for varmetype og hva kursen betjener); hver
    kurs' detaljside; fjernvarme- og tappevannssider.
@@ -325,12 +331,16 @@ Slik gjør du det med Claude Code: start `claude` og skriv for eksempel:
 > mellom det som står i klartekst på bildene og det som er tolkning.
 
 Les gjennom alt Claude skriver og rett det som er galt — det er ditt notat,
-Claude er bare sekretær.
+Claude er bare sekretær. Og når Claude stiller spørsmål du ikke kan svare på:
+det er ikke et problem, det er metoden. Samle dem i en egen **«Åpne
+punkter»**-seksjon i notatet i stedet for å stoppe opp — det er som regel
+driften som kan bygget, og de svarer senere. Uavklarte punkter blir stående
+som `assumed` i grafen til noen med kunnskap lukker dem.
 
 ### 4.4 Bygg-indeksen: én JSON-fil per bygg
 
 Indeksen er grafens kilde: en strukturert fil med alt du kartla. Den ligger i
-`knowledge_base/school_index/` og heter `<KODE>.json`. **Malen er eksemplet
+`knowledge_base/index/` og heter `<KODE>.json`. **Malen er eksemplet
 rett under.** De ferdige byggene fra bunten (`TA.json`, `SK.json`, `BI.json`)
 viser hvordan et komplett, ekte bygg ser ut — de er nyttige å titte i, men
 mye større enn du trenger for å komme i gang. Nøkkellisten for formatet står
@@ -390,7 +400,7 @@ Det viktigste å forstå:
 Også her er Claude Code rett verktøy: be den lage utkastet fra
 kartleggingsnotatet ditt —
 
-> Lag `knowledge_base/school_index/<KODE>.json` fra kartleggingsnotatet mitt,
+> Lag `knowledge_base/index/<KODE>.json` fra kartleggingsnotatet mitt,
 > etter samme struktur som minimums-eksemplet i
 > `docs/OPPLAERING_NYTT_BYGG.md` kap. 4.4 (se `BI.json` for et komplett
 > eksempel). Sett `confidence` ærlig per faktum ut fra kildene i notatet, og
@@ -401,7 +411,7 @@ kartleggingsnotatet ditt —
 ### 4.5 Eksporter grafen
 
 ```powershell
-python -m src.heating.neo4j_export --index-dir knowledge_base/school_index --runs-dir runs/schools -o runs/heating/school_index.cypher
+python -m src.heating.neo4j_export --index-dir knowledge_base/index --runs-dir runs/timeseries -o runs/heating/index.cypher
 ```
 
 Dette lager én tekstfil med alle graf-instruksjonene. To ting å vite:
@@ -417,7 +427,7 @@ Dette lager én tekstfil med alle graf-instruksjonene. To ting å vite:
 Sjekk at Neo4j Desktop kjører (grønn "Active"), og kjør:
 
 ```powershell
-python -m src.heating.neo4j_import --cypher runs/heating/school_index.cypher
+python -m src.heating.neo4j_import --cypher runs/heating/index.cypher
 ```
 
 Programmet skriver til slutt en kvittering: antall noder per type (Site,
@@ -562,6 +572,7 @@ på nytt.
 | `Activate.ps1 ... execution policy` | Kjør `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, prøv igjen |
 | `ModuleNotFoundError` | Venv ikke aktivert i dette terminalvinduet: `.\.venv\Scripts\Activate.ps1` — eller `pip install -r requirements.txt` mangler |
 | `neo4j_import`: «connection refused» | Neo4j Desktop kjører ikke — start databasen først |
+| Neo4j-instansen stopper straks etter start | Datamappen ligger i en OneDrive-synkronisert sti (husk: «Dokumenter»/«Skrivebord» er ofte OneDrive på Windows 11). Flytt Neo4j Desktops datamappe til f.eks. `C:\neo4j-data` i innstillingene og opprett instansen på nytt. Andre årsaker: port 7687 opptatt (`netstat -ano \| findstr 7687`) eller antivirus — les `neo4j.log` (instansen → Logs) |
 | `neo4j_import`: «set NEO4J_PASSWORD ...» | `.env`-filen mangler/feilnavngitt (skal hete nøyaktig `.env`, ligge i prosjektmappen, og du må stå i prosjektmappen når du kjører) |
 | Autentiseringsfeil fra Neo4j | Passordet i `.env` er ikke det du satte i Neo4j Desktop |
 | Eksporten stopper med en JSON-feil («Expecting value», «Expecting ','» ...) | Skrivefeil i en indeksfil (f.eks. et komma for mye/lite) — lim feilmeldingen inn i Claude Code, så finner den stedet |
@@ -569,6 +580,7 @@ på nytt.
 | `UnicodeDecodeError` ved uttrekk | CSV-en er ikke UTF-8 — åpne den i Notisblokk og velg Lagre som → Koding: UTF-8 |
 | Stor `residue.jsonl` (reglene klarte lite) | Normalt for et nytt merkesystem — det er nettopp dette LLM-leddet er til. Bakgrunn: `docs/tokenizer_failure_modes.md` |
 | Grafen mangler bygget ditt | Sto JSON-filen i mappen du ga til `--index-dir`? Kjørte du både eksport OG import etterpå? |
+| Importen melder noder, men **0 relasjoner** | Id-referansene i indeksfilen matcher ikke: `sub_building_id` på rom/systemer og `serves`-verdier må være **eksakt** lik en id i `sub_buildings`/`systems` (samme tegn, store/små bokstaver). Kjør eksporten på nytt — den skriver en ADVARSEL som lister id-ene det gjelder. Rett dem i indeksfilen (be gjerne Claude Code om hjelp), og kjør eksport + import på nytt |
 | Rart bygg dukker opp i grafen | En kladde-/testfil med `.json`-endelse lå i indeksmappen — fjern den, eksporter og importer på nytt |
 | Dekoderen setter `null` der du vet svaret | Riktig oppførsel: aldri gjette. Legg kunnskapen i `knowledge_base/`, kjør på nytt |
 | Alt annet | `python -m pytest -q` skal være grønn; er den ikke det, er noe galt lokalt. Og: spør Claude Code — lim inn feilmeldingen |
@@ -582,10 +594,10 @@ på nytt.
 # ---- Ryggraden (alltid) ----
 # 1. Kartlegg SD-anlegget med skjermbilder (kap. 4.2)
 # 2. Kartleggingsnotat + bygg-indeks med Claude Code (kap. 4.3-4.4)
-#    -> knowledge_base/school_index/<KODE>.json
+#    -> knowledge_base/index/<KODE>.json
 # 3. Eksporter og importer:
-python -m src.heating.neo4j_export --index-dir knowledge_base/school_index --runs-dir runs/schools -o runs/heating/school_index.cypher
-python -m src.heating.neo4j_import --cypher runs/heating/school_index.cypher
+python -m src.heating.neo4j_export --index-dir knowledge_base/index --runs-dir runs/timeseries -o runs/heating/index.cypher
+python -m src.heating.neo4j_import --cypher runs/heating/index.cypher
 # 4. Kontroller i Neo4j Browser (BRUKERVEILEDNING_GRAF.md)
 
 # ---- Tillegg ved CSV-eksporter (kap. 5) ----
