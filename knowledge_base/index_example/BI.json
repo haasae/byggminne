@@ -1,0 +1,2205 @@
+{
+  "building": "BI",
+  "building_node": "BI_Bislett",
+  "building_name": "Bislett stadion",
+  "display_name": "Bislett stadion",
+  "comment": "Surveyed 2026-07-31 from Piscada UI screenshots ONLY (OBF SD-anlegg; native app via Citrix, no crawl/API -- OPEN_ITEMS item 6); full narrative + per-fact citations in knowledge_base/bislett_building_survey.md, screenshots in knowledge_base/incoming/piscada/pics/Bislett/. No machine-readable exports yet (GK point list pending), so systems/rooms here are HAND-CURATED from the UI. Volume model: one SubBuilding BI-STADION (the ring) carries floors/rooms (Romstyring: Uetg/2etg/3etg, NO 1. etg page); the three stand sectors (Loerdahls/Sofies/Bislett plass, named by the heating circuit titles) are separate SubBuildings used as SERVES targets -- sector<->room mapping is UNKNOWN, so rooms hang under BI-STADION and inherit NO heating type (honest gap, see OPEN_ITEMS). Heating chain verified from the plant pages: Fjernvarme -> 320.001 Hovedstokk -> 320.002/003/004 radiatorkurs (sector names in panel titles; 320.002 also feeds varmebatteri 360.001/-02, 320.003 feeds 360.003) -> 320.005 Gulvvarme (area unknown) + 320.006 Banevarme (grasrot SP 7.0 C sesongstart; track sensors RT601-608; RT607 loose sensor -21.6 C, RT608 implausible 70.0 C). Per-circuit OE401 energy meters modelled as System points (own alarm pages under Tekniske Signaler). Central nattsenking per kurs (turtemp -5.0 K on 320.002); vinterdrift below utetemp 20.0 C (hysterese 1.0 K). Rooms: tiles show temperature + heating gain (+ CO2 on 2/3 etg); SETPOINTS VERIFIED 2026-07-31 via room pictures (right-click -> Aapne -> Temperatur: Komfort/dag + Oekonomi/natt, 21.0/21.0 on U-etg samples; upper floors natt=0.0 driven by Piscada Schedule objects, e.g. Schedule_BS_320_022_RT630_SPN = 0.0 -- no setback configured anywhere at capture). Real label grammar +3B600046_563_<rom>_<komp>_<PV|C>; rooms also have KMD (systemvender) + KMD_MSV (tidsprogram) points (survey, Object properties section). Several undersentraler: BislettStadion:15039 (U-etg), :15036 (2. etg schedule). U-etg tile ids R048/R049/R052 appeared twice at capture resolution (one of each pair is probably R046/R050-area) -- recorded once each pending zoomed recapture. 360.004 heating battery appears electric (no hydronic pipes; no 320-kurs coupling) -- hypothesis in the survey, not in the graph. Solceller + Lysstyring + 310.001 exist in the menus, not yet surveyed.",
+  "sub_buildings": [
+    {
+      "id": "BI-STADION",
+      "name": "Stadionbygget (ringen)"
+    },
+    {
+      "id": "BI-LORDAHLSPLASS",
+      "name": "Sektor Lørdahls plass",
+      "heating": "radiator"
+    },
+    {
+      "id": "BI-SOFIESPLASS",
+      "name": "Sektor Sofies plass",
+      "heating": "radiator"
+    },
+    {
+      "id": "BI-BISLETTPLASS",
+      "name": "Sektor Bislett plass",
+      "heating": "radiator"
+    }
+  ],
+  "systems": [
+    {
+      "id": "BI-320.001",
+      "kind": "heating",
+      "subsystem": "320.001",
+      "name": "320.001 Hovedstokk (fjernvarme)",
+      "points": [
+        {
+          "code": "JP401",
+          "label": "320.001 JP401 hovedpumpe",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320001_Hovedstokk.png"
+        },
+        {
+          "code": "JP402",
+          "label": "320.001 JP402 hovedpumpe",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320001_Hovedstokk.png"
+        },
+        {
+          "code": "RT401",
+          "label": "320.001 RT401 turtemperatur hovedstokk",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320001_Hovedstokk.png"
+        },
+        {
+          "code": "RT501",
+          "label": "320.001 RT501 returtemperatur hovedstokk",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320001_Hovedstokk.png"
+        },
+        {
+          "code": "RP501",
+          "label": "320.001 RP501 trykk retur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320001_Hovedstokk.png"
+        }
+      ]
+    },
+    {
+      "id": "BI-320.002",
+      "kind": "heating",
+      "parent": "BI-320.001",
+      "subsystem": "320.002",
+      "name": "320.002 Radiatorkurs Loerdahls plass (+ varmebatteri 360.001/-02)",
+      "serves": [
+        "BI-LORDAHLSPLASS"
+      ],
+      "points": [
+        {
+          "code": "RT401",
+          "label": "320.002 RT401 turtemperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "RT501",
+          "label": "320.002 RT501 returtemperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "JP401",
+          "label": "320.002 JP401 sirkulasjonspumpe",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "SB401",
+          "label": "320.002 SB401 reguleringsventil",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "OE401",
+          "label": "320.002 OE401 energimaaler (egen alarmside under Tekniske Signaler)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        }
+      ]
+    },
+    {
+      "id": "BI-320.003",
+      "kind": "heating",
+      "parent": "BI-320.001",
+      "subsystem": "320.003",
+      "name": "320.003 Radiatorkurs Sofies plass (+ varmebatteri 360.003)",
+      "serves": [
+        "BI-SOFIESPLASS"
+      ],
+      "points": [
+        {
+          "code": "RT401",
+          "label": "320.003 RT401 turtemperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "RT501",
+          "label": "320.003 RT501 returtemperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "JP401",
+          "label": "320.003 JP401 sirkulasjonspumpe",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "SB401",
+          "label": "320.003 SB401 reguleringsventil",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "OE401",
+          "label": "320.003 OE401 energimaaler (egen alarmside under Tekniske Signaler)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        }
+      ]
+    },
+    {
+      "id": "BI-320.004",
+      "kind": "heating",
+      "parent": "BI-320.001",
+      "subsystem": "320.004",
+      "name": "320.004 Radiatorkurs Bislett plass",
+      "serves": [
+        "BI-BISLETTPLASS"
+      ],
+      "points": [
+        {
+          "code": "RT401",
+          "label": "320.004 RT401 turtemperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "RT501",
+          "label": "320.004 RT501 returtemperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "JP501",
+          "label": "320.004 JP501 sirkulasjonspumpe",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "SB401",
+          "label": "320.004 SB401 reguleringsventil",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        },
+        {
+          "code": "OE401",
+          "label": "320.004 OE401 energimaaler (egen alarmside under Tekniske Signaler)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png"
+        }
+      ]
+    },
+    {
+      "id": "BI-320.005",
+      "kind": "",
+      "parent": "BI-320.001",
+      "subsystem": "320.005",
+      "name": "320.005 Gulvvarmekurs (dekningsomraade ukjent)",
+      "points": [
+        {
+          "code": "RT401",
+          "label": "320.005 RT401 turtemperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "RT501",
+          "label": "320.005 RT501 returtemperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "JP401",
+          "label": "320.005 JP401 sirkulasjonspumpe",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "SB401",
+          "label": "320.005 SB401 reguleringsventil",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "OE401",
+          "label": "320.005 OE401 energimaaler (egen alarmside under Tekniske Signaler)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        }
+      ]
+    },
+    {
+      "id": "BI-320.006",
+      "kind": "",
+      "parent": "BI-320.001",
+      "subsystem": "320.006",
+      "name": "320.006 Banevarme (grasrot, loepebane/indre bane)",
+      "points": [
+        {
+          "code": "JP402",
+          "label": "320.006 JP402 pumpe (primaerside)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "ML401",
+          "label": "320.006 ML401 (veksler-arrangement, funksjon uverifisert)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "RT401",
+          "label": "320.006 RT401 turtemperatur (SP grasrot sesongstart 7.0 C)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "RT402",
+          "label": "320.006 RT402 temperatur",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "RT501",
+          "label": "320.006 RT501 returtemperatur (sekundaerside)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "RT502",
+          "label": "320.006 RT502 temperatur (sekundaerside)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "RP501",
+          "label": "320.006 RP501 trykk (sekundaerside)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "SB401",
+          "label": "320.006 SB401 reguleringsventil",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320005_til_320006_Varmekurser.png"
+        },
+        {
+          "code": "RT601",
+          "label": "320.006 RT601 banetemperatur (foler i banen)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320006_Banevarme.png"
+        },
+        {
+          "code": "RT602",
+          "label": "320.006 RT602 banetemperatur (foler i banen)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320006_Banevarme.png"
+        },
+        {
+          "code": "RT603",
+          "label": "320.006 RT603 banetemperatur (foler i banen)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320006_Banevarme.png"
+        },
+        {
+          "code": "RT604",
+          "label": "320.006 RT604 banetemperatur (foler i banen)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320006_Banevarme.png"
+        },
+        {
+          "code": "RT605",
+          "label": "320.006 RT605 banetemperatur (foler i banen)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320006_Banevarme.png"
+        },
+        {
+          "code": "RT606",
+          "label": "320.006 RT606 banetemperatur (foler i banen)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320006_Banevarme.png"
+        },
+        {
+          "code": "RT607",
+          "label": "320.006 RT607 banetemperatur (foler i banen)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320006_Banevarme.png"
+        },
+        {
+          "code": "RT608",
+          "label": "320.006 RT608 banetemperatur (foler i banen)",
+          "file": "pics/Bislett/bislett-02-varmeanlegg_320006_Banevarme.png"
+        }
+      ]
+    },
+    {
+      "id": "BI-360.001",
+      "kind": "ahu",
+      "subsystem": "360.001",
+      "name": "360.001 Aggregat (avtrekksregulert, DX-kjoeling)"
+    },
+    {
+      "id": "BI-360.002",
+      "kind": "ahu",
+      "subsystem": "360.002",
+      "name": "360.002 Aggregat (avtrekksregulert, DX-kjoeling)"
+    },
+    {
+      "id": "BI-360.003",
+      "kind": "ahu",
+      "subsystem": "360.003",
+      "name": "360.003 Aggregat (konstant avtrekk, CO2)"
+    },
+    {
+      "id": "BI-360.004",
+      "kind": "ahu",
+      "subsystem": "360.004",
+      "name": "360.004 Aggregat (trykkstyrt VAV, nattkjoeling)"
+    },
+    {
+      "id": "BI-310.001",
+      "kind": "",
+      "subsystem": "310.001",
+      "name": "310.001 Sanitaeranlegg (side ikke kartlagt)"
+    }
+  ],
+  "rooms": [
+    {
+      "id": "BI-ROOM-053",
+      "number": "053",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "053 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "053 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "053 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-054",
+      "number": "054",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "054 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "054 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "054 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-055",
+      "number": "055",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "055 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "055 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "055 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-056",
+      "number": "056",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "056 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "056 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "056 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-057",
+      "number": "057",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "057 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "057 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "057 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-058",
+      "number": "058",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "058 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "058 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "058 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-059",
+      "number": "059",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "059 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "059 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "059 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-060",
+      "number": "060",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "+3B600046_563_060_RT601_PV (Romtemperatur)",
+          "file": "Object properties-dialog i Piscada (bruker 2026-07-31)"
+        },
+        {
+          "signal": "heating",
+          "label": "+3B600046_563_060_SB601_C (Ventilmotor, gulvvarmeventil 0-100 %)",
+          "file": "Object properties-dialog i Piscada (bruker 2026-07-31)"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "060 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-061",
+      "number": "061",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "061 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "061 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "061 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-062",
+      "number": "062",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "062 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "062 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "062 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-063",
+      "number": "063",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "063 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "063 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "063 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-010",
+      "number": "010",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "010 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "010 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "010 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-012",
+      "number": "012",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "012 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "012 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "012 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-016",
+      "number": "016",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "016 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "016 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "016 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-020",
+      "number": "020",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "020 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "020 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "020 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-032",
+      "number": "032",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "032 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "032 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "032 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-033",
+      "number": "033",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "033 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "033 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "033 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-034",
+      "number": "034",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "034 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "034 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "034 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-035",
+      "number": "035",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "035 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "035 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "035 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-036",
+      "number": "036",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "036 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "036 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "036 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-037",
+      "number": "037",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "037 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "037 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "037 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-038",
+      "number": "038",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "038 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "038 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "038 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-041",
+      "number": "041",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "041 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "041 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "041 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-042",
+      "number": "042",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "042 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "042 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "042 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-043",
+      "number": "043",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "043 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "043 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "043 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-044",
+      "number": "044",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "044 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "044 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "044 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-045",
+      "number": "045",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "045 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "045 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "045 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-046",
+      "number": "046",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "046 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "046 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "046 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-047",
+      "number": "047",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "047 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "047 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "047 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-048",
+      "number": "048",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "048 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "048 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "048 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-049",
+      "number": "049",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "049 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "049 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "049 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-050",
+      "number": "050",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "050 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "050 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "050 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-051",
+      "number": "051",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "051 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "051 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "051 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-052",
+      "number": "052",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "052 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "052 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "052 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-LOPEBANE-A39-44",
+      "number": "Løpebane A39-44",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "Loepebane A39-44 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "Loepebane A39-44 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "Loepebane A39-44 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-LOPEBANE-A44-47",
+      "number": "Løpebane A44-47",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "Loepebane A44-47 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "Loepebane A44-47 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "Loepebane A44-47 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ],
+      "address": 112
+    },
+    {
+      "id": "BI-ROOM-LOPEBANE-A47-48",
+      "number": "Løpebane A47-48",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "Loepebane A47-48 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "Loepebane A47-48 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "Loepebane A47-48 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-LOPEBANE-A49-51",
+      "number": "Løpebane A49-51",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "Loepebane A49-51 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "Loepebane A49-51 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "Loepebane A49-51 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-LOPEBANE-A51-58",
+      "number": "Løpebane A51-58",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "Loepebane A51-58 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "Loepebane A51-58 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "Loepebane A51-58 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-KORRIDOR-A52",
+      "number": "Korridor A52",
+      "floor": 0,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "Korridor A52 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "Korridor A52 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_Uetg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "Korridor A52 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-20_2_4",
+      "number": "20.2.4",
+      "floor": 2,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "20.2.4 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "20.2.4 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del1.png"
+        },
+        {
+          "signal": "co2",
+          "label": "20.2.4 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "20.2.4 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-20_2_6-7",
+      "number": "20.2.6/7",
+      "floor": 2,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "20.2.6/7 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "20.2.6/7 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "20.2.6/7 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "20.2.6/7 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-20_2_8",
+      "number": "20.2.8",
+      "floor": 2,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "20.2.8 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "20.2.8 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "20.2.8 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "20.2.8 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-20_2_9",
+      "number": "20.2.9",
+      "floor": 2,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "20.2.9 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "20.2.9 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "20.2.9 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "20.2.9 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-20_2_10-11-12",
+      "number": "20.2.10/11/12",
+      "floor": 2,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "20.2.10/11/12 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "20.2.10/11/12 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "20.2.10/11/12 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "20.2.10/11/12 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-20_2_13",
+      "number": "20.2.13",
+      "floor": 2,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "20.2.13 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "20.2.13 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "20.2.13 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_2etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "20.2.13 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_3",
+      "number": "30.2.3",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.3 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.3 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.3 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.3 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_4",
+      "number": "30.2.4",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.4 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.4 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.4 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.4 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_5",
+      "number": "30.2.5",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.5 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.5 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.5 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.5 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_6",
+      "number": "30.2.6",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.6 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.6 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.6 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.6 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_07",
+      "number": "30.2.07",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.07 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.07 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.07 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.07 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_9",
+      "number": "30.2.9",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.9 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.9 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.9 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del1.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.9 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_10",
+      "number": "30.2.10",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.10 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.10 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.10 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.10 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_11",
+      "number": "30.2.11",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.11 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.11 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.11 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.11 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_12",
+      "number": "30.2.12",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.12 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.12 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.12 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.12 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_13",
+      "number": "30.2.13",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.13 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.13 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.13 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.13 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_14",
+      "number": "30.2.14",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.14 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.14 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.14 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.14 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_15",
+      "number": "30.2.15",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.15 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.15 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.15 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.15 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_16",
+      "number": "30.2.16",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.16 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.16 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.16 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.16 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_17",
+      "number": "30.2.17",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.17 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.17 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.17 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.17 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_18",
+      "number": "30.2.18",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.18 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.18 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.18 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.18 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_19",
+      "number": "30.2.19",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.19 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.19 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.19 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.19 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_20",
+      "number": "30.2.20",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.20 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.20 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.20 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.20 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_21",
+      "number": "30.2.21",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.21 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.21 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.21 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.21 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_22",
+      "number": "30.2.22",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.22 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.22 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.22 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.22 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_23",
+      "number": "30.2.23",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.23 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.23 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.23 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.23 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_24",
+      "number": "30.2.24",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.24 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.24 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.24 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.24 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_26-27",
+      "number": "30.2.26/27",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.26/27 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.26/27 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.26/27 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.26/27 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_30",
+      "number": "30.2.30",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.30 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.30 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.30 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.30 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    },
+    {
+      "id": "BI-ROOM-30_2_31",
+      "number": "30.2.31",
+      "floor": 3,
+      "sub_building_id": "BI-STADION",
+      "source": "piscada-ui",
+      "points": [
+        {
+          "signal": "temperature",
+          "label": "30.2.31 temperatur (Romstyring-flis, Piscada)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "heating",
+          "label": "30.2.31 varmepaadrag (groenn soyle paa Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "co2",
+          "label": "30.2.31 CO2 (Romstyring-flis)",
+          "file": "pics/Bislett/bislett-04-romstyring_3etg_Del2.png"
+        },
+        {
+          "signal": "temperature_setpoint",
+          "label": "30.2.31 settpunkt Komfort/dag + Oekonomi/natt (rombilde, Temperatur-fane)",
+          "file": "Rombilde Temperatur-fane; verifisert paa rom 060, Loepebane A44-47, R20.2.8, R30.2.11 (bruker 2026-07-31, pics/Bislett/bislett-05-rom-*)"
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "BI-LORDAHLSPLASS": {
+      "heating": {
+        "source": "Kurstittelen '320.002 & 360.001/-02 - Radiator Lørdahls plass' på varmekurssiden (pics/Bislett/bislett-02-varmeanlegg_320002_to_320004_Varmekurser.png, crops/kurs-320002-panel.png).",
+        "confidence": "verified"
+      }
+    },
+    "BI-SOFIESPLASS": {
+      "heating": {
+        "source": "Kurstittelen '320.003 & 360.003 - Radiator Sofies plass' på varmekurssiden (crops/kurs-320003-panel.png).",
+        "confidence": "verified"
+      }
+    },
+    "BI-BISLETTPLASS": {
+      "heating": {
+        "source": "Kurstittelen '320.004 - Radiator Bislett plass' på varmekurssiden (crops/kurs-320004-panel.png).",
+        "confidence": "verified"
+      }
+    },
+    "BI-320.002": {
+      "serves": {
+        "source": "Kurstittelen '320.002 & 360.001/-02 - Radiator Lørdahls plass' navngir sektoren kursen forsyner (crops/kurs-320002-panel.png).",
+        "confidence": "verified"
+      }
+    },
+    "BI-320.003": {
+      "serves": {
+        "source": "Kurstittelen '320.003 & 360.003 - Radiator Sofies plass' (crops/kurs-320003-panel.png).",
+        "confidence": "verified"
+      }
+    },
+    "BI-320.004": {
+      "serves": {
+        "source": "Kurstittelen '320.004 - Radiator Bislett plass' (crops/kurs-320004-panel.png).",
+        "confidence": "verified"
+      }
+    },
+    "BI-ROOM-060": {
+      "heating": {
+        "value": "gulvvarme",
+        "source": "BACnet ObjectName B'Flr_00'FlHeat(01)'RIOU8(03)'Vlv(07) (FlHeat = gulvvarme) og beskrivelsen 'Ventilmotor' på punktet +3B600046_563_060_SB601_C - Object properties-dialogen i Piscada, avlest av bruker 2026-07-31.",
+        "confidence": "verified"
+      }
+    }
+  }
+}
