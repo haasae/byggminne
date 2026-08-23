@@ -1,31 +1,31 @@
 # byggminne
 
-## Short intro of the application
+## Intro of the application
 
 ### Motivation
 
-This application is made on behalf of Oslobygg in the City of Oslo. It is part of a bigger project with the goal of providing operations personell with a way to visually observe where there is potential for energy-flexibility in the buildings that Oslobygg manage.
+This application is made on behalf of Oslobygg in the City of Oslo. It is part of a bigger project with the goal of providing operations personell with a way to visually observe where there is potential for energy-flexibility in the buildings that Oslobygg manage. However, the application can also be used for other purposes within building management.
+
+### Usability / Who is this meant for
+
+The application should not be treated as a polished and fully "furnished" one. Instead it is a foundation that others should build on top of. What I mean by this is that the pipeline (Unstructured data → Brick Schema → Knowledge graph) works, but the connection to e.g. energy flexibility is not directly obvious yet, and the application is not easy to use for operations personell. The reason for this is that the use case for the application differs. At Oslobygg we made a solution for connecting it to energy flexibility and made it easier to use for operations personell, but this solution is not a universal one. And just to be clear: 
+- **This application is open-source and whoever wants to use it for their own solution are fully allowed and encouraged to!**      
 
 ### Pipeline
 
 This codebase creates a pipeline that does the following:
 1. Decodes unstructured building-energy measurement labels into a structured, machine-readable format.
 2. Translates structured labels into Brick Schema-format.
-3. Creates a knowledge graph from the Brick Schema-code to be used in flexibility calculations.
+3. Creates a knowledge graph from the Brick Schema-code to be used in e.g. flexibility calculations.
 4. Analyzes room-heating timeseries (`src/heating/`) to derive data-verified
-   facts — gain regime, heating type, thermal response time, an energy proxy —
-   and enriches the knowledge graph with them (Turtle per building, plus a
-   Neo4j export). See `docs/ROOM_HEATING_PLAN.md` for the design and status.
+   facts (e.g. heating type, thermal response time) and enriches the knowledge graph with them (Turtle per building, plus a
+   Neo4j export). See `docs/ROOM_HEATING_PLAN.md` for the design.
 
 A "label" is a point name from a building data system. More specifically, it's an
 unstructured (mostly Norwegian) string encoding building, system, subsystem,
 component, and measurement type.
 
 See `CLAUDE.md` for the full architecture, domain rules, and cross-check logic.
-
-## Who is this meant for
-
-The project is meant to be used by those who wish to structure their building data to an understandable format. The main purpose is to provide functionality for Oslobygg, but hopefully it can be useful for others as well.
 
 ## Setup
 
@@ -41,9 +41,9 @@ Always read CSVs as UTF-8 (Norwegian æ/ø/å). On Windows, set
 **No building data ships with this repo** (`data/raw/` and `data/training/`
 are gitignored). What *is* committed: evaluation batches of real labels under
 `data/eval/batches/` and a gold set under `tests/gold/`, so you can run the
-pipeline immediately — see Quick start.
+pipeline immediately.
 
-## Quick start (no data needed)
+## Quick start to verify that everything works (no data needed)
 
 ```bash
 # Decode one label:
@@ -61,9 +61,11 @@ python -m src.validate.validate_examples
 
 `run_eval` decodes deterministically, scores against gold if
 `tests/gold/<id>/gold.jsonl` exists, and writes a plain-language `summary.md`
-under `runs/`. How to read the metrics honestly: `docs/EVALUATION.md`.
+under `runs/`. How to read the metrics: `docs/EVALUATION.md`.
 
 ## How to use with your own data
+
+_**Note: When it says e.g. `<name>`, `<file>`, `<id>` in the instructions below, the words + brackets are only placeholders. If the file-name is e.g. `index`, you should put its Markdown-converted version (called `index.md`) inside `knowledge_base/index_dir/`**_
 
 1. Gather all info you can get about how your data is labeled and classified
    (tables, standards, vendor docs). Put the source documents in `docs/`.
@@ -85,50 +87,49 @@ Decoded labels give structure, but a knowledge graph also needs facts that
 often live only in the BMS user interface: which sub-buildings, floors and
 rooms exist, which heating circuits and ventilation aggregates serve what,
 and whether each room has the heating triple (temperature sensor, setpoint,
-heating actuator). If the BMS offers no export or API, a **screenshot survey
-of the UI is enough** — production graphs have been built that way. Capture,
-in this order:
+heating actuator). If the BMS offers no export or API, a screenshot survey
+of the UI is enough. Below is the minimum of what the survey should include.
+Capture the pictures in this order:
 
 1. **Orientation** — the front page, the navigation tree fully expanded, and
    any site/building overview graphic with names on it.
-2. **Heating** — the plant diagram; every circuit box zoomed until its name
-   is readable (circuit names are the main evidence for heating type and for
-   what each circuit serves); each circuit's detail page; pump-stop /
-   outdoor-compensation settings; district-heating and hot-water pages.
-3. **Ventilation** — each aggregate's page; zoom any placement/coverage
-   panel (positions of buttons on overview maps are *not* trustworthy —
-   panel text is).
+2. **Heating** — the plant diagram (and within it, every circuit box zoomed until its name
+   is readable), each circuit's detail page (pump-stop /
+   outdoor-compensation settings), district-heating and hot-water pages.
+3. **Ventilation** — each aggregate's page (zoom any placement/coverage
+   panel)
 4. **Room control** — floor/room overviews, then room detail pages showing
    the triple and the equipment graphic. One shot per page *style* is
-   enough, but note how many rooms it represents — and take one example of a
+   enough, but note how many rooms it represents, and take one example of a
    room with no heating controls, if any exist.
 5. **Energy/meter pages**, if the UI has them.
 
-Rules of thumb: navigate read-only (never touch setpoint fields, hand/auto
-switches, or start/stop buttons); a zoomed, readable label beats pretty
-framing; name files after the fact they prove. Collect each building's alias
-names across systems (BMS, aerial photo, energy portal often disagree), and
-treat buildings visible on overview images but absent from the BMS as
-findings: record them as outside BMS scope — never merge them into a known
-wing without evidence. Questions neither you nor the operator can settle go
-into an "open items" section of the survey note, to be put to the building's
-operations staff later — they usually know. Store screenshots under a
-gitignored path (e.g. `knowledge_base/incoming/<bms>/pics/<building>/`) —
-they are building data and must never be committed. While surveying, record
-*how* you know each fact (explicit panel text vs. your reading of a
-graphic) — that distinction becomes the graph's per-fact provenance
-(`verified` / `curated` / `assumed`). From the survey, write a survey
-markdown and a building index; the playbook is `docs/HANDOVER.md` §4.
+In general, the more pictures, the better. The pictures are meant to give context
+to the AI, and more picture = more context – if done correctly. Below are rules 
+concerning capturing and naming the BMS screenshots.
 
-### The LLM layer
+_**Rules of thumb for the surveying:**_ 
+- navigate read-only (never touch setpoint fields, hand/auto
+switches, or start/stop buttons)
+- make sure labels and names are readable
+- name files after the fact they prove.
+- be aware that a building's alias names (e.g. sub-buildings of a school) can differ across systems (BMS, aerial photo, energy portal often disagree).
+- if buildings are visible on overview buildings but absent from the BMS, document this as a finding. Record them as outside BMS scope, and never merge them into a known wing without evidence. 
+- questions neither you nor the operator can settle go into an "open items" section of the survey note, to be put to the building's operations staff later — they usually know. 
+- store screenshots under a  gitignored path (e.g. `knowledge_base/incoming/<bms>/pics/<building>/`) — they are building data and must never be committed.
 
-The deterministic layer (rules + retrieval) is plain Python and needs no LLM.
-The residue, which is the labels it can't resolve, is decoded by the `/decode` skill (and
+Now you have screenshots and possibly notes on irregularities you noticed underway. This is the context the AI receives to make it's own markdown survey and building index which will be used to create the knowledge graph.
+
+## How the decoding part works
+
+Decoding works in two layers: A deterministic one (rules + retrieval, plain Python), and an LLM one (preferably with Claude. ChatGPT, Gemini, etc. works as well) 
+
+The deterministic layer first tries to decode the labels it is given. The residue, which is the labels it can't resolve, is decoded by the `/decode` skill (and
 thin decodes enriched by `/enrich`), which ship in `.claude/skills/` and run
-inside [Claude Code](https://claude.com/claude-code): one fresh subagent per
-label, no paid API needed. `docs/EVALUATION.md` documents the cold-start rules
+inside Claude Code, one fresh subagent per
+label, **no paid API needed**. `docs/EVALUATION.md` documents the cold-start rules
 this must honor. An API-based runner (`src/decode/run_batch.py`) exists as a
-blueprint but is not yet implemented.
+blueprint but is not yet implemented. **If you wish to use API, you need to implement this yourself**.
 
 Claude Code is the tested path, not a hard dependency. Other agentic tools
 (e.g. OpenAI Codex) are oriented by `AGENTS.md` and can follow the same skill
@@ -218,7 +219,3 @@ the pilot buildings.
 ## License
 
 Apache-2.0 — see `LICENSE`.
-
-## Status
-
-Work in progress as of 30.07.2026.
